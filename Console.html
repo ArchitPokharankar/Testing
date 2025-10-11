@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practical 1 - C# Programs</title>
+<style>
+    body { font-family: Consolas, monospace; background: #f4f4f4; color: #333; padding: 20px; }
+    h1, h2 { color: #222; }
+    pre { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); overflow-x: auto; }
+    code { font-family: 'Courier New', monospace; }
+</style>
+</head>
+<body>
+<h1>Practical 1 - C# Programs</h1>
+
+<h2>1️⃣ Simple Calculator</h2>
+<pre><code>using System;
+class Program
+{
+    static void Main()
+    {
+        Console.Write("Enter 1st: "); int a = int.Parse(Console.ReadLine());
+        Console.Write("Enter 2nd: "); int b = int.Parse(Console.ReadLine());
+        Console.Write("Choose (+,-,*,/): "); char op = char.Parse(Console.ReadLine());
+        int r = 0;
+
+        switch (op)
+        {
+            case '+': r = a + b; break;
+            case '-': r = a - b; break;
+            case '*': r = a * b; break;
+            case '/':
+                if (b == 0)
+                {
+                    Console.WriteLine("Invalid division (cannot divide by zero).");
+                    return;
+                }
+                r = a / b;
+                break;
+            default:
+                Console.WriteLine("Invalid operator!");
+                return;
+        }
+
+        Console.WriteLine($"Result = {r}");
+    }
+}</code></pre>
+
+<h2>2️⃣ Calculator with Functions</h2>
+<pre><code>using System;
+class Program {
+    static int Add(int a,int b)=>a+b;
+    static int Sub(int a,int b)=>a-b;
+    static int Mul(int a,int b)=>a*b;
+    static int Div(int a,int b)=>b==0?0:a/b;
+    static void Main() {
+        Console.Write("Enter 1st: "); int a=int.Parse(Console.ReadLine());
+        Console.Write("Enter 2nd: "); int b=int.Parse(Console.ReadLine());
+        Console.Write("Choose (+,-,*,/): "); char op=char.Parse(Console.ReadLine());
+        if(op=='/' && b==0){Console.WriteLine("Invalid division"); return;}
+        int r = op switch {
+            '+' => Add(a,b),
+            '-' => Sub(a,b),
+            '*' => Mul(a,b),
+            '/' => Div(a,b),
+            _ => 0
+        };
+        Console.WriteLine($"Result = {r}");
+    }
+}</code></pre>
+
+<h2>3️⃣ Odd or Even</h2>
+<pre><code>using System;
+class Program {
+    static void Main() {
+        Console.Write("Enter a number: ");
+        int n=int.Parse(Console.ReadLine());
+        Console.WriteLine(n%2==0 ? "Even" : "Odd");
+    }
+}</code></pre>
+
+<h2>4️⃣ Prime Number</h2>
+<pre><code>using System;
+class Program {
+    static void Main() {
+        Console.Write("Enter number: ");
+        int n=int.Parse(Console.ReadLine());
+        bool prime = n>1;
+        for(int i=2;i<=Math.Sqrt(n);i++)
+            if(n%i==0){ prime=false; break; }
+        Console.WriteLine(prime ? "Prime" : "Not Prime");
+    }
+}</code></pre>
+
+<h2>5️⃣ Temperature Conversion</h2>
+<pre><code>using System;
+class Program {
+    static void Main() {
+        Console.Write("Enter Celsius: ");
+        double c=double.Parse(Console.ReadLine());
+        Console.WriteLine($"Fahrenheit = {(c*9/5)+32}");
+    }
+}</code></pre>
+
+<h2>6️⃣ Factorial (With Recursion)</h2>
+<pre><code>using System;
+class Program {
+    static long Fact(int n)=> (n<=1)?1:n*Fact(n-1);
+    static void Main() {
+        Console.Write("Enter number: ");
+        int n=int.Parse(Console.ReadLine());
+        Console.WriteLine(n<0?"Invalid":"Factorial = "+Fact(n));
+    }
+}</code></pre>
+
+<h2>7️⃣ Factorial (Without Recursion)</h2>
+<pre><code>using System;
+class Program {
+    static void Main() {
+        Console.Write("Enter number: ");
+        int n=int.Parse(Console.ReadLine());
+        if(n<0){Console.WriteLine("Invalid");return;}
+        long f=1; for(int i=2;i<=n;i++) f*=i;
+        Console.WriteLine($"Factorial = {f}");
+    }
+}</code></pre>
+
+</body>
+</html>

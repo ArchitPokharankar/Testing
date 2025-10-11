@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASP.NET Core MVC - Product Page Code</title>
+    <style>
+        body { font-family: Consolas, 'Courier New', monospace; background: #f4f4f4; color: #333; padding: 20px; line-height: 1.6; }
+        h1, h2 { color: #222; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        p { color: #555; }
+        pre { background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); overflow-x: auto; }
+        code { font-family: Consolas, 'Courier New', monospace; }
+        .path { font-style: italic; color: #0066cc; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>ASP.NET Core MVC - Product Page Project</h1>
+    <p>Here are all the necessary code snippets for the project. Assume your project is named <strong>MyWebApp</strong>. If you used a different name, remember to change "MyWebApp" in the code below.</p>
+
+    <h2>1️⃣ Model: The Product Blueprint</h2>
+    <p>File location: <span class="path">Models/Product.cs</span></p>
+    <pre><code>
+namespace MyWebApp.Models
+{
+    // This is the blueprint for a single product.
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public string ImageUrl { get; set; }
+    }
+}
+    </code></pre>
+
+    <h2>2️⃣ Controller: The Manager</h2>
+    <p>File location: <span class="path">Controllers/ProductController.cs</span></p>
+    <pre><code>
+using Microsoft.AspNetCore.Mvc;
+using MyWebApp.Models; // Tells the controller where to find the Product blueprint
+using System.Collections.Generic;
+using System.Linq;
+
+namespace MyWebApp.Controllers
+{
+    public class ProductController : Controller
+    {
+        // A simple, hardcoded list of our products
+        private static List&lt;Product&gt; _products = new List&lt;Product&gt;
+        {
+            new Product { Id = 1, Name = "Laptop", Description = "A powerful laptop.", Price = 90000, ImageUrl = "/images/laptop.jpg" },
+            new Product { Id = 2, Name = "Mobile", Description = "A modern smartphone.", Price = 35000, ImageUrl = "/images/phone.jpg" },
+            new Product { Id = 3, Name = "Headphone", Description = "Noise-cancelling headphones.", Price = 7000, ImageUrl = "/images/headphones.jpg" }
+        };
+
+        // This action shows the list of ALL products.
+        public IActionResult Index()
+        {
+            // It sends our list of products to the "Index" view.
+            return View(_products);
+        }
+
+        // This action shows the details for ONE product.
+        public IActionResult Details(int id)
+        {
+            // It finds the product in our list that matches the requested ID.
+            var product = _products.FirstOrDefault(p => p.Id == id);
+
+            // It sends that single product to the "Details" view.
+            return View(product);
+        }
+    }
+}
+    </code></pre>
+
+    <h2>3️⃣ View: The Product List Page</h2>
+    <p>File location: <span class="path">Views/Product/Index.cshtml</span></p>
+    <pre><code>
+&lt;!-- This file displays the table of all products --&gt;
+@model IEnumerable&lt;MyWebApp.Models.Product&gt;
+
+&lt;h2&gt;Our Products&lt;/h2&gt;
+
+&lt;table class="table"&gt;
+    @foreach (var p in Model)
+    {
+        &lt;tr&gt;
+            &lt;td&gt;@p.Name&lt;/td&gt;
+            &lt;td&gt;@p.Price.ToString("c")&lt;/td&gt; &lt;!-- "c" formats it as currency --&gt;
+            &lt;td&gt;
+                &lt;!-- This link goes to the "Details" page for the product's Id --&gt;
+                &lt;a asp-action="Details" asp-route-id="@p.Id" class="btn btn-primary"&gt;View Details&lt;/a&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+    }
+&lt;/table&gt;
+    </code></pre>
+
+    <h2>4️⃣ View: The Product Details Page</h2>
+    <p>File location: <span class="path">Views/Product/Details.cshtml</span></p>
+    <pre><code>
+&lt;!-- This file displays the details for a single product --&gt;
+@model MyWebApp.Models.Product
+
+&lt;h2&gt;@Model.Name&lt;/h2&gt;
+
+&lt;img src="@Model.ImageUrl" alt="@Model.Name" style="width:300px;" /&gt;
+
+&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt; @Model.Description&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Price:&lt;/strong&gt; @Model.Price.ToString("c")&lt;/p&gt; &lt;!-- Currency format --&gt;
+    </code></pre>
+
+</body>
+</html>

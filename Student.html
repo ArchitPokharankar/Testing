@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Project - Corrected Code</title>
+    <style>
+        body { 
+            font-family: Consolas, 'Courier New', monospace; 
+            background-color: #f4f4f4; 
+            color: #333; 
+            padding: 20px; 
+            line-height: 1.6;
+        }
+        h1 { 
+            color: #1a1a1a; 
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h2 { 
+            color: #0056b3; 
+            margin-top: 40px;
+        }
+        pre { 
+            background: #fff; 
+            padding: 15px; 
+            border: 1px solid #ddd;
+            border-left: 5px solid #007bff;
+            border-radius: 5px; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
+            overflow-x: auto; 
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code { 
+            font-family: Consolas, 'Courier New', monospace; 
+        }
+        .path {
+             font-size: 0.9em; 
+             color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ASP.NET Core MVC - Student Project 🧑‍🎓</h1>
+
+    <h2>1. Model <span class="path">(Models/Student.cs)</span></h2>
+    <pre><code>
+// File: Models/Student.cs
+
+namespace StudentProject.Models
+{
+    public class Student
+    {
+        // It's standard practice in C# to use PascalCase for properties.
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public string Course { get; set; }
+    }
+}
+    </code></pre>
+
+    <h2>2. Controller <span class="path">(Controllers/StudentController.cs)</span></h2>
+    <pre><code>
+// File: Controllers/StudentController.cs
+
+using Microsoft.AspNetCore.Mvc;
+using StudentProject.Models; // Use your actual project name
+using System.Collections.Generic;
+using System.Linq;
+
+namespace StudentProject.Controllers
+{
+    public class StudentController : Controller
+    {
+        // This static list acts as a simple in-memory database.
+        private static List&lt;Student&gt; students = new List&lt;Student&gt;
+        {
+            new Student { Id = 1, Name = "Mukesh", Age = 21, Course = "Computer Science" },
+            new Student { Id = 2, Name = "Raj", Age = 23, Course = "Bio Technology" }
+        };
+
+        // This action shows the list of all students.
+        // GET: /Student/ or /Student/Index
+        public IActionResult Index()
+        {
+            // Pass the list of students to the corresponding View.
+            return View(students);
+        }
+
+        // This action displays the form to add a new student.
+        // GET: /Student/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // This action handles the form submission.
+        // POST: /Student/Create
+        [HttpPost]
+        public IActionResult Create(Student student)
+        {
+            // A simple way to generate a new unique ID.
+            student.Id = students.Any() ? students.Max(s => s.Id) + 1 : 1;
+            students.Add(student);
+            
+            // Redirect back to the Index page to show the updated list.
+            return RedirectToAction("Index");
+        }
+    }
+}
+    </code></pre>
+
+    <h2>3. Index View <span class="path">(Views/Student/Index.cshtml)</span></h2>
+    <pre><code>
+&lt;!-- File: Views/Student/Index.cshtml --&gt;
+
+@model IEnumerable&lt;StudentProject.Models.Student&gt;
+
+&lt;h2&gt;Student List&lt;/h2&gt;
+
+&lt;!-- Link to the Create page --&gt;
+&lt;a class="btn btn-primary mb-3" href="/Student/Create"&gt;Add New Student&lt;/a&gt;
+
+&lt;table class="table table-bordered table-striped"&gt;
+    &lt;thead class="thead-dark"&gt;
+        &lt;tr&gt;
+            &lt;th&gt;ID&lt;/th&gt;
+            &lt;th&gt;Name&lt;/th&gt;
+            &lt;th&gt;Age&lt;/th&gt;
+            &lt;th&gt;Course&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        @foreach (var student in Model)
+        {
+            &lt;tr&gt;
+                &lt;td&gt;@student.Id&lt;/td&gt;
+                &lt;td&gt;@student.Name&lt;/td&gt;
+                &lt;td&gt;@student.Age&lt;/td&gt;
+                &lt;td&gt;@student.Course&lt;/td&gt;
+            &lt;/tr&gt;
+        }
+    &lt;/tbody&gt;
+&lt;/table&gt;
+    </code></pre>
+
+    <h2>4. Create View <span class="path">(Views/Student/Create.cshtml)</span></h2>
+    <pre><code>
+&lt;!-- File: Views/Student/Create.cshtml --&gt;
+
+@model StudentProject.Models.Student
+
+&lt;h2&gt;Create New Student&lt;/h2&gt;
+
+&lt;!-- This form will POST data to the 'Create' action in StudentController --&gt;
+&lt;form asp-action="Create" method="post"&gt;
+    &lt;div class="form-group mb-3"&gt;
+        &lt;label asp-for="Name"&gt;&lt;/label&gt;
+        &lt;input asp-for="Name" class="form-control" /&gt;
+    &lt;/div&gt;
+    &lt;div class="form-group mb-3"&gt;
+        &lt;label asp-for="Age"&gt;&lt;/label&gt;
+        &lt;input asp-for="Age" class="form-control" type="number" /&gt;
+    &lt;/div&gt;
+    &lt;div class="form-group mb-3"&gt;
+        &lt;label asp-for="Course"&gt;&lt;/label&gt;
+        &lt;input asp-for="Course" class="form-control" /&gt;
+    &lt;/div&gt;
+    &lt;button type="submit" class="btn btn-success"&gt;Save Student&lt;/button&gt;
+&lt;/form&gt;
+    </code></pre>
+
+</body>
+</html>

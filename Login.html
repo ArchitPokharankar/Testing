@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practical 5 & 6 - ASP.NET Core Login Form</title>
+<style>
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        background-color: #f0f2f5; 
+        color: #333; 
+        padding: 25px; 
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
+    h1, h2 { 
+        color: #005a9e;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 10px;
+    }
+    h2 {
+        font-size: 1.5em;
+        margin-top: 40px;
+    }
+    p.filepath {
+        font-family: Consolas, 'Courier New', monospace;
+        background-color: #e7e7e7;
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: #d63384;
+        font-weight: bold;
+    }
+    pre { 
+        background: #fff; 
+        padding: 15px; 
+        border-radius: 8px; 
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        overflow-x: auto; 
+        border-left: 5px solid #005a9e;
+    }
+    code { 
+        font-family: Consolas, 'Courier New', monospace; 
+        font-size: 0.95em;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Practical 5 & 6: Login Form with Validation in ASP.NET Core MVC</h1>
+    <p>This file contains all the code needed to create a login form with model binding, client-side, and server-side validation. Copy and paste each section into the specified file in your Visual Studio project.</p>
+
+    <h2>1️⃣ The Model: `LoginViewModel.cs`</h2>
+    <p class="filepath">File Location: Models/LoginViewModel.cs</p>
+    <p>This class defines the data properties (Email, Password) and their validation rules.</p>
+    <pre><code>using System.ComponentModel.DataAnnotations;
+
+namespace LoginValidationExample.Models
+{
+    public class LoginViewModel
+    {
+        [Required(ErrorMessage = "Please enter your email address.")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Please enter your password.")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
+}</code></pre>
+
+    <h2>2️⃣ The Controller: `HomeController.cs`</h2>
+    <p class="filepath">File Location: Controllers/HomeController.cs</p>
+    <p>Add the <code>using</code> statement and the three new action methods (<code>Login</code> GET, <code>Login</code> POST, and <code>Welcome</code>) to your existing <code>HomeController</code>.</p>
+    <pre><code>using Microsoft.AspNetCore.Mvc;
+using LoginValidationExample.Models; // &lt;-- Add this using statement
+
+namespace LoginValidationExample.Controllers
+{
+    public class HomeController : Controller
+    {
+        // ... (Your existing Index and Privacy actions are here) ...
+
+        // GET: /Home/Login
+        // This action shows the empty login form
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        // POST: /Home/Login
+        // This action handles the form submission
+        [HttpPost]
+        public IActionResult Login(LoginViewModel model)
+        {
+            // Server-side validation check
+            if (ModelState.IsValid)
+            {
+                // In a real app, you would check credentials against a database.
+                // For this example, we'll just redirect to a "Welcome" page on success.
+                return RedirectToAction("Welcome");
+            }
+
+            // If ModelState is NOT valid, return the view with the model
+            // to display validation error messages.
+            return View(model);
+        }
+
+        // A simple action to redirect to after a successful login
+        public IActionResult Welcome()
+        {
+            return View();
+        }
+    }
+}</code></pre>
+
+    <h2>3️⃣ The View: `Login.cshtml`</h2>
+    <p class="filepath">File Location: Views/Home/Login.cshtml</p>
+    <p>This is the HTML form the user will see. It uses Tag Helpers to bind to the model and display validation messages.</p>
+    <pre><code>@model LoginValidationExample.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+
+&lt;div class="row"&gt;
+    &lt;div class="col-md-4"&gt;
+        &lt;form asp-action="Login" method="post"&gt;
+            &lt;div asp-validation-summary="ModelOnly" class="text-danger"&gt;&lt;/div&gt;
+            
+            &lt;div class="form-group"&gt;
+                &lt;label asp-for="Email" class="control-label"&gt;&lt;/label&gt;
+                &lt;input asp-for="Email" class="form-control" /&gt;
+                &lt;span asp-validation-for="Email" class="text-danger"&gt;&lt;/span&gt;
+            &lt;/div&gt;
+            
+            &lt;div class="form-group"&gt;
+                &lt;label asp-for="Password" class="control-label"&gt;&lt;/label&gt;
+                &lt;input asp-for="Password" class="form-control" /&gt;
+                &lt;span asp-validation-for="Password" class="text-danger"&gt;&lt;/span&gt;
+            &lt;/div&gt;
+            
+            &lt;div class="form-group" style="margin-top: 15px;"&gt;
+                &lt;input type="submit" value="Log In" class="btn btn-primary" /&gt;
+            &lt;/div&gt;
+        &lt;/form&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+</code></pre>
+
+    <h2>4️⃣ The Welcome View: `Welcome.cshtml`</h2>
+    <p class="filepath">File Location: Views/Home/Welcome.cshtml</p>
+    <p>A simple page to show that the login was successful.</p>
+    <pre><code>@{
+    ViewData["Title"] = "Welcome";
+}
+
+&lt;div class="text-center"&gt;
+    &lt;h1 class="display-4"&gt;Welcome!&lt;/h1&gt;
+    &lt;p&gt;You have successfully logged in.&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+
+</div>
+
+</body>
+</html>
