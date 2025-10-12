@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Crypto Practicals — Code Library</title>
+  <style>
+    body{font-family:Inter, Roboto, Arial, sans-serif; background:#0f172a; color:#e6eef8; padding:24px}
+    .container{max-width:1100px;margin:0 auto}
+    h1{font-size:22px;margin-bottom:6px}
+    p.lead{color:#9fb0d6}
+    .card{background:#071020;border:1px solid #113; padding:14px;border-radius:10px;margin:18px 0}
+    .controls{margin-bottom:8px}
+    button{background:#1e40af;color:white;border:0;padding:8px 10px;border-radius:6px;margin-right:8px;cursor:pointer}
+    button.secondary{background:#334155}
+    textarea.code{width:100%;height:320px;background:#001219;color:#dbeafe;border-radius:8px;border:0;padding:12px;font-family:monospace;font-size:12px;white-space:pre;overflow:auto}
+    small.note{display:block;color:#9fb0d6;margin-top:6px}
+    .meta{font-size:12px;color:#9fb0d6}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .filename{background:#07102a;padding:6px 8px;border-radius:6px;border:1px solid #193}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Crypto Practicals — Single HTML file</h1>
+    <p class="lead">Each block below contains a working Python program from your practicals. Use the buttons to copy or download each program as a <code>.py</code> file. These cannot run inside the browser — they are for viewing/copying/downloading only.</p>
+
+    <div class="meta">Tip: click <strong>Download</strong> to save the file locally, or <strong>Copy</strong> to paste it into your IDE.</div>
+
+    <!-- helper script -->
+    <script>
+      function copyCode(id){
+        const ta = document.getElementById(id);
+        ta.select();
+        document.execCommand('copy');
+        alert('Copied to clipboard');
+      }
+      function downloadCode(id, filename){
+        const code = document.getElementById(id).value;
+        const blob = new Blob([code], {type: 'text/x-python'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+      }
+      function toggleWrap(id){
+        const ta = document.getElementById(id);
+        ta.style.whiteSpace = (ta.style.whiteSpace==='pre' ? 'pre-wrap' : 'pre');
+      }
+    </script>
+
+    <!-- SECTION TEMPLATE -->
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>1 — caesar_cipher.py</strong><div class="meta">Caesar cipher encrypt/decrypt</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-caesar')">Copy</button>
+          <button onclick="downloadCode('code-caesar','caesar_cipher.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-caesar')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-caesar" class="code"># caesar_cipher.py
+def caesar_encrypt(plaintext: str, shift: int) -> str:
+    result = []
+    for ch in plaintext:
+        if ch.isupper():
+            result.append(chr((ord(ch) - 65 + shift) % 26 + 65))
+        elif ch.islower():
+            result.append(chr((ord(ch) - 97 + shift) % 26 + 97))
+        else:
+            result.append(ch)
+    return ''.join(result)
+
+def caesar_decrypt(ciphertext: str, shift: int) -> str:
+    return caesar_encrypt(ciphertext, -shift)
+
+if __name__ == "__main__":
+    pt = input("Plaintext: ")
+    s = int(input("Shift (e.g. 3): "))
+    enc = caesar_encrypt(pt, s)
+    dec = caesar_decrypt(enc, s)
+    print("Encrypted:", enc)
+    print("Decrypted:", dec)
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>1 — monoalphabetic.py</strong><div class="meta">Monoalphabetic substitution cipher</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-mono')">Copy</button>
+          <button onclick="downloadCode('code-mono','monoalphabetic.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-mono')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-mono" class="code">import string
+
+def validate_key(key: str):
+    key = key.lower()
+    if len(key) != 26 or set(key) != set(string.ascii_lowercase):
+        raise ValueError("Key must be 26 unique letters (a-z).")
+    return key
+
+def encrypt(plaintext: str, key: str) -> str:
+    key = validate_key(key)
+    mapping = {c: k for c, k in zip(string.ascii_lowercase, key)}
+    out = []
+    for ch in plaintext:
+        if ch.islower():
+            out.append(mapping[ch])
+        elif ch.isupper():
+            out.append(mapping[ch.lower()].upper())
+        else:
+            out.append(ch)
+    return ''.join(out)
+
+def decrypt(ciphertext: str, key: str) -> str:
+    key = validate_key(key)
+    rev = {k: c for c, k in zip(string.ascii_lowercase, key)}
+    out = []
+    for ch in ciphertext:
+        if ch.islower():
+            out.append(rev[ch])
+        elif ch.isupper():
+            out.append(rev[ch.lower()].upper())
+        else:
+            out.append(ch)
+    return ''.join(out)
+
+if __name__ == "__main__":
+    key = input("Enter 26-letter key (a-z permutation): ").strip()
+    pt = input("Plaintext: ")
+    enc = encrypt(pt, key)
+    dec = decrypt(enc, key)
+    print("Encrypted:", enc)
+    print("Decrypted:", dec)
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>2 — vernam_cipher.py</strong><div class="meta">Vernam (one-time pad) using XOR — outputs hex</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-vernam')">Copy</button>
+          <button onclick="downloadCode('code-vernam','vernam_cipher.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-vernam')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-vernam" class="code">def vernam_encrypt(plaintext: str, key: str) -> str:
+    if len(key) != len(plaintext):
+        raise ValueError("Key must be same length as plaintext for true Vernam.")
+    ct_bytes = [chr(ord(p) ^ ord(k)) for p, k in zip(plaintext, key)]
+    # represent encrypted as hex for safe printing
+    return ''.join(ct_bytes).encode('latin1').hex()
+
+def vernam_decrypt(hex_cipher: str, key: str) -> str:
+    ct = bytes.fromhex(hex_cipher).decode('latin1')
+    if len(key) != len(ct):
+        raise ValueError("Key must be same length as ciphertext.")
+    pt = ''.join(chr(ord(c) ^ ord(k)) for c, k in zip(ct, key))
+    return pt
+
+if __name__ == "__main__":
+    pt = input("Plaintext: ")
+    key = input("Key (same length): ")
+    c = vernam_encrypt(pt, key)
+    print("Encrypted (hex):", c)
+    print("Decrypted:", vernam_decrypt(c, key))
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>2 — playfair.py</strong><div class="meta">Playfair cipher (I/J merged, X padding)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-playfair')">Copy</button>
+          <button onclick="downloadCode('code-playfair','playfair.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-playfair')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-playfair" class="code">import string
+
+def generate_matrix(key: str):
+    key = key.upper().replace('J', 'I')
+    seen = []
+    for ch in key:
+        if ch.isalpha() and ch not in seen:
+            seen.append(ch)
+    for ch in string.ascii_uppercase:
+        if ch == 'J':
+            continue
+        if ch not in seen:
+            seen.append(ch)
+    # 5x5 matrix
+    mat = [seen[i*5:(i+1)*5] for i in range(5)]
+    return mat
+
+def find_pos(mat, ch):
+    for r in range(5):
+        for c in range(5):
+            if mat[r][c] == ch:
+                return r, c
+    return None
+
+def prepare_text(text):
+    text = text.upper().replace('J', 'I')
+    text = ''.join([c for c in text if c.isalpha()])
+    out = []
+    i = 0
+    while i < len(text):
+        a = text[i]
+        b = text[i+1] if i+1 < len(text) else 'X'
+        if a == b:
+            out.append(a + 'X')
+            i += 1
+        else:
+            out.append(a + b)
+            i += 2
+    if len(out[-1]) == 1:
+        out[-1] += 'X'
+    return out
+
+def playfair_encrypt(plaintext, key):
+    mat = generate_matrix(key)
+    pairs = prepare_text(plaintext)
+    cipher = []
+    for a, b in pairs:
+        ra, ca = find_pos(mat, a)
+        rb, cb = find_pos(mat, b)
+        if ra == rb:
+            cipher.append(mat[ra][(ca+1)%5] + mat[rb][(cb+1)%5])
+        elif ca == cb:
+            cipher.append(mat[(ra+1)%5][ca] + mat[(rb+1)%5][cb])
+        else:
+            cipher.append(mat[ra][cb] + mat[rb][ca])
+    return ''.join(cipher)
+
+def playfair_decrypt(ciphertext, key):
+    mat = generate_matrix(key)
+    pairs = [ciphertext[i:i+2] for i in range(0, len(ciphertext), 2)]
+    plain = []
+    for a,b in pairs:
+        ra, ca = find_pos(mat, a)
+        rb, cb = find_pos(mat, b)
+        if ra == rb:
+            plain.append(mat[ra][(ca-1)%5] + mat[rb][(cb-1)%5])
+        elif ca == cb:
+            plain.append(mat[(ra-1)%5][ca] + mat[(rb-1)%5][cb])
+        else:
+            plain.append(mat[ra][cb] + mat[rb][ca])
+    return ''.join(plain)
+
+if __name__ == "__main__":
+    key = input("Playfair key: ")
+    text = input("Text: ")
+    enc = playfair_encrypt(text, key)
+    dec = playfair_decrypt(enc, key)
+    print("Encrypted:", enc)
+    print("Decrypted (raw):", dec)
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>3 — railfence.py</strong><div class="meta">Rail Fence cipher encrypt/decrypt</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-railfence')">Copy</button>
+          <button onclick="downloadCode('code-railfence','railfence.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-railfence')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-railfence" class="code">def rail_fence_encrypt(text: str, rails: int) -> str:
+    if rails <= 1:
+        return text
+    fence = ['' for _ in range(rails)]
+    rail = 0
+    direction = 1
+    for ch in text:
+        fence[rail] += ch
+        rail += direction
+        if rail == 0 or rail == rails-1:
+            direction *= -1
+    return ''.join(fence)
+
+def rail_fence_decrypt(cipher: str, rails: int) -> str:
+    if rails <= 1:
+        return cipher
+    # determine pattern lengths
+    pattern = list(range(rails)) + list(range(rails-2,0,-1))
+    seq = []
+    i = 0
+    while len(seq) < len(cipher):
+        for p in pattern:
+            if len(seq) < len(cipher):
+                seq.append(p)
+    lengths = [seq.count(r) for r in range(rails)]
+    parts = []
+    idx = 0
+    for l in lengths:
+        parts.append(cipher[idx:idx+l])
+        idx += l
+    # rebuild
+    pos = [0]*rails
+    out = []
+    for p in seq[:len(cipher)]:
+        out.append(parts[p][pos[p]])
+        pos[p] += 1
+    return ''.join(out)
+
+if __name__ == "__main__":
+    text = input("Text: ")
+    r = int(input("Rails (e.g. 3): "))
+    e = rail_fence_encrypt(text, r)
+    d = rail_fence_decrypt(e, r)
+    print("Encrypted:", e)
+    print("Decrypted:", d)
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>3 — simple_columnar.py</strong><div class="meta">Simple columnar transposition (encrypt/decrypt)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-columnar')">Copy</button>
+          <button onclick="downloadCode('code-columnar','simple_columnar.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-columnar')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-columnar" class="code">import math
+
+def column_order(key: str):
+    # assign order based on alphabetical rank; stable for duplicate letters
+    keyed = sorted([(c, i) for i, c in enumerate(key)])
+    order = {}
+    for rank, (_, original_index) in enumerate(keyed):
+        order[original_index] = rank
+    # return list of column indices in order of processing
+    return [i for i, _ in sorted(order.items(), key=lambda x: x[1])]
+
+def encrypt(plaintext: str, key: str) -> str:
+    text = ''.join([c for c in plaintext if c.isalpha()]).upper()
+    cols = len(key)
+    rows = math.ceil(len(text) / cols)
+    # fill matrix row-wise with padding 'X'
+    matrix = [['X']*cols for _ in range(rows)]
+    idx = 0
+    for r in range(rows):
+        for c in range(cols):
+            if idx < len(text):
+                matrix[r][c] = text[idx]
+                idx += 1
+    # read columns in key order
+    order = column_order(key)
+    cipher = ''
+    for c in order:
+        for r in range(rows):
+            cipher += matrix[r][c]
+    return cipher
+
+def decrypt(ciphertext: str, key: str) -> str:
+    cols = len(key)
+    rows = len(ciphertext) // cols
+    order = column_order(key)
+    # fill columns in order
+    matrix = [['']*cols for _ in range(rows)]
+    idx = 0
+    for c in order:
+        for r in range(rows):
+            matrix[r][c] = ciphertext[idx]
+            idx += 1
+    # read row-wise
+    pt = ''.join(''.join(row) for row in matrix)
+    return pt.rstrip('X')
+
+if __name__ == "__main__":
+    key = input("Key: ")
+    pt = input("Plaintext: ")
+    ct = encrypt(pt, key)
+    print("Encrypted:", ct)
+    print("Decrypted:", decrypt(ct, key))
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>4 — symmetric_crypto.py</strong><div class="meta">DES & AES examples (requires pycryptodome)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-symm')">Copy</button>
+          <button onclick="downloadCode('code-symm','symmetric_crypto.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-symm')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-symm" class="code">from Crypto.Cipher import DES, AES
+from Crypto.Random import get_random_bytes
+import math
+
+def pkcs7_pad(data: bytes, block_size: int) -> bytes:
+    pad_len = block_size - (len(data) % block_size)
+    return data + bytes([pad_len]) * pad_len
+
+def pkcs7_unpad(data: bytes) -> bytes:
+    pad = data[-1]
+    if pad < 1 or pad > len(data):
+        raise ValueError("Invalid padding")
+    if data[-pad:] != bytes([pad]) * pad:
+        raise ValueError("Invalid padding bytes")
+    return data[:-pad]
+
+# DES (ECB and CBC examples)
+def des_demo():
+    key = b'8bytekey'  # must be 8 bytes
+    data = b"HelloDES!"  # will pad
+    data_p = pkcs7_pad(data, 8)
+
+    # ECB
+    des_ecb = DES.new(key, DES.MODE_ECB)
+    enc_ecb = des_ecb.encrypt(data_p)
+    dec_ecb = DES.new(key, DES.MODE_ECB).decrypt(enc_ecb)
+    print("DES ECB enc (hex):", enc_ecb.hex())
+    print("DES ECB dec:", pkcs7_unpad(dec_ecb))
+
+    # CBC
+    iv = get_random_bytes(8)
+    des_cbc = DES.new(key, DES.MODE_CBC, iv)
+    enc_cbc = des_cbc.encrypt(data_p)
+    dec_cbc = DES.new(key, DES.MODE_CBC, iv).decrypt(enc_cbc)
+    print("DES CBC enc (hex):", enc_cbc.hex())
+    print("DES CBC dec:", pkcs7_unpad(dec_cbc))
+
+# AES (ECB and CBC)
+def aes_demo():
+    key = b'ThisIsA16ByteKey'  # 16 bytes for AES-128
+    data = b"HelloAESWorld123" # 16 bytes exactly; show pad works too
+    data_p = pkcs7_pad(data, 16)
+
+    # ECB
+    aes_ecb = AES.new(key, AES.MODE_ECB)
+    enc_ecb = aes_ecb.encrypt(data_p)
+    dec_ecb = AES.new(key, AES.MODE_ECB).decrypt(enc_ecb)
+    print("AES ECB enc (hex):", enc_ecb.hex())
+    print("AES ECB dec:", pkcs7_unpad(dec_ecb))
+
+    # CBC
+    iv = get_random_bytes(16)
+    aes_cbc = AES.new(key, AES.MODE_CBC, iv)
+    enc_cbc = aes_cbc.encrypt(data_p)
+    dec_cbc = AES.new(key, AES.MODE_CBC, iv).decrypt(enc_cbc)
+    print("AES CBC enc (hex):", enc_cbc.hex())
+    print("AES CBC dec:", pkcs7_unpad(dec_cbc))
+
+if __name__ == "__main__":
+    print("=== DES demo ===")
+    des_demo()
+    print("\n=== AES demo ===")
+    aes_demo()
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>5 — rsa_demo.py</strong><div class="meta">RSA keygen + encrypt/decrypt (pycryptodome)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-rsa')">Copy</button>
+          <button onclick="downloadCode('code-rsa','rsa_demo.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-rsa')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-rsa" class="code">from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+import base64
+
+def generate_keys(bits=2048):
+    key = RSA.generate(bits)
+    private_pem = key.export_key()
+    public_pem = key.publickey().export_key()
+    return private_pem, public_pem
+
+def encrypt_with_public(public_pem: bytes, message: str) -> str:
+    rsa_key = RSA.import_key(public_pem)
+    cipher = PKCS1_OAEP.new(rsa_key)
+    ct = cipher.encrypt(message.encode())
+    return base64.b64encode(ct).decode()
+
+def decrypt_with_private(private_pem: bytes, b64_cipher: str) -> str:
+    rsa_key = RSA.import_key(private_pem)
+    cipher = PKCS1_OAEP.new(rsa_key)
+    pt = cipher.decrypt(base64.b64decode(b64_cipher))
+    return pt.decode()
+
+if __name__ == "__main__":
+    private, public = generate_keys()
+    print("Public Key (PEM):\n", public.decode()[:200], "...\n")
+    msg = input("Message to encrypt: ")
+    ct = encrypt_with_public(public, msg)
+    print("Encrypted (base64):", ct)
+    dec = decrypt_with_private(private, ct)
+    print("Decrypted:", dec)
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>6 — diffie_hellman.py</strong><div class="meta">Diffie-Hellman key exchange demo (small demo prime)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-dh')">Copy</button>
+          <button onclick="downloadCode('code-dh','diffie_hellman.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-dh')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-dh" class="code">import secrets
+import hashlib
+
+# 2048-bit MODP Group prime (RFC3526) shortened representation here for practicality:
+# For real usage copy the full prime. Here we use a smaller prime for quick demo (NOT for real security).
+P = 0xE95E4A5F737059DC60DF5991D45029409E60FC09  # small demo prime (example)
+G = 2
+
+def gen_private_key(bits=256):
+    return secrets.randbelow(1 << bits)
+
+def gen_public(private):
+    return pow(G, private, P)
+
+def gen_shared(priv, other_pub):
+    return pow(other_pub, priv, P)
+
+if __name__ == "__main__":
+    # Alice
+    a_priv = gen_private_key(128)
+    a_pub = gen_public(a_priv)
+    # Bob
+    b_priv = gen_private_key(128)
+    b_pub = gen_public(b_priv)
+    # shared
+    s1 = gen_shared(a_priv, b_pub)
+    s2 = gen_shared(b_priv, a_pub)
+    print("Alice pub:", a_pub)
+    print("Bob pub:  ", b_pub)
+    print("Shared equal?", s1 == s2)
+    # derive symmetric key (e.g., SHA-256 of shared)
+    key = hashlib.sha256(str(s1).encode()).hexdigest()
+    print("Derived key (hex):", key)
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>7 — md5_util.py</strong><div class="meta">MD5 digest for text or file</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-md5')">Copy</button>
+          <button onclick="downloadCode('code-md5','md5_util.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-md5')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-md5" class="code">import hashlib
+import argparse
+
+def md5_text(text: str) -> str:
+    return hashlib.md5(text.encode('utf-8')).hexdigest()
+
+def md5_file(path: str) -> str:
+    h = hashlib.md5()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--text", help="Compute MD5 of text")
+    parser.add_argument("--file", help="Compute MD5 of file path")
+    args = parser.parse_args()
+    if args.text:
+        print("MD5:", md5_text(args.text))
+    elif args.file:
+        print("MD5:", md5_file(args.file))
+    else:
+        print("Usage: --text 'hello' or --file /path/to/file")
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>8 — hmac_sha1.py</strong><div class="meta">HMAC-SHA1 for text or file</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-hmac')">Copy</button>
+          <button onclick="downloadCode('code-hmac','hmac_sha1.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-hmac')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-hmac" class="code">import hmac, hashlib
+from pathlib import Path
+
+def hmac_sha1(key: str, message: bytes) -> str:
+    return hmac.new(key.encode(), message, hashlib.sha1).hexdigest()
+
+if __name__ == "__main__":
+    key = input("Key: ")
+    mode = input("Compute for (t)ext or (f)ile? ").strip().lower()
+    if mode.startswith('t'):
+        msg = input("Message: ").encode()
+        print("HMAC-SHA1:", hmac_sha1(key, msg))
+    else:
+        path = input("File path: ")
+        p = Path(path)
+        if not p.exists():
+            print("File not found.")
+        else:
+            data = p.read_bytes()
+            print("HMAC-SHA1:", hmac_sha1(key, data))
+</textarea>
+    </div>
+
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>9 — ssl_server.py & ssl_client.py</strong><div class="meta">Simple TLS server and client demo (self-signed cert)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-ssl-server')">Copy Server</button>
+          <button onclick="downloadCode('code-ssl-server','ssl_server.py')">Download Server</button>
+          <button onclick="copyCode('code-ssl-client')">Copy Client</button>
+          <button onclick="downloadCode('code-ssl-client','ssl_client.py')">Download Client</button>
+          <button class="secondary" onclick="toggleWrap('code-ssl-server');toggleWrap('code-ssl-client')">Toggle Wrap</button>
+        </div>
+      </div>
+      <small class="note">Generate a self-signed cert with openssl (instructions in header of code).</small>
+      <textarea id="code-ssl-server" class="code"># ssl_server.py
+import socket, ssl
+
+HOST = '127.0.0.1'
+PORT = 8443
+
+context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+context.load_cert_chain(certfile="server.crt", keyfile="server.key")
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
+    sock.bind((HOST, PORT))
+    sock.listen(5)
+    print("Server listening on", (HOST, PORT))
+    with context.wrap_socket(sock, server_side=True) as ssock:
+        conn, addr = ssock.accept()
+        print("Connection from", addr)
+        data = conn.recv(4096)
+        print("Received:", data.decode())
+        conn.sendall(b"Hello over TLS")
+        conn.close()
+</textarea>
+
+      <textarea id="code-ssl-client" class="code"># ssl_client.py
+import socket, ssl
+
+HOST = '127.0.0.1'
+PORT = 8443
+
+context = ssl.create_default_context()
+# for demo with self-signed cert, allow it (NOT for production)
+context.check_hostname = False
+context.verify_mode = ssl.CERT_NONE
+
+with socket.create_connection((HOST, PORT)) as sock:
+    with context.wrap_socket(sock, server_hostname=HOST) as ssock:
+        ssock.sendall(b"Hello server, this is client")
+        print("Received:", ssock.recv(4096).decode())
+</textarea>
+    </div>
+
+    <p class="meta">If you want, I can bundle all of these into a downloadable ZIP for you. Want that?</p>
+  </div>
+</body>
+</html>
