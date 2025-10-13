@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Practicals — Combined</title>
+  <style>
+    body{font-family:Inter, Roboto, Arial, sans-serif; background:#0f172a; color:#e6eef8; padding:24px}
+    .container{max-width:1100px;margin:0 auto}
+    h1{font-size:22px;margin-bottom:6px}
+    p.lead{color:#9fb0d6}
+    .card{background:#071020;border:1px solid #113; padding:14px;border-radius:10px;margin:18px 0}
+    .controls{margin-bottom:8px}
+    button{background:#1e40af;color:white;border:0;padding:8px 10px;border-radius:6px;margin-right:8px;cursor:pointer}
+    button.secondary{background:#334155}
+    textarea.code{width:100%;height:320px;background:#001219;color:#dbeafe;border-radius:8px;border:0;padding:12px;font-family:monospace;font-size:12px;white-space:pre;overflow:auto}
+    small.note{display:block;color:#9fb0d6;margin-top:6px}
+    .meta{font-size:12px;color:#9fb0d6}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .filename{background:#07102a;padding:6px 8px;border-radius:6px;border:1px solid #193}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI Practicals — Single HTML file </h1>
+    <p class="lead">This single HTML contains code blocks extracted from your uploaded document. Each card shows a program and has Copy / Download buttons. These programs are for viewing/copying only (they won't run in the browser).</p>
+
+    <div class="meta">Tip: click <strong>Download</strong> to save the file locally, or <strong>Copy</strong> to paste it into your IDE.</div>
+
+    <script>
+      function copyCode(id){
+        const ta = document.getElementById(id);
+        ta.select();
+        document.execCommand('copy');
+        alert('Copied to clipboard');
+      }
+      function downloadCode(id, filename){
+        const code = document.getElementById(id).value;
+        const blob = new Blob([code], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+      }
+      function toggleWrap(id){
+        const ta = document.getElementById(id);
+        ta.style.whiteSpace = (ta.style.whiteSpace==='pre' ? 'pre-wrap' : 'pre');
+      }
+    </script>
+
+    <!-- Practical 1: DFS (graph example) -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Practical 1 — dfs_graph.py</strong><div class="meta">Depth First Search — examples</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-dfs-graph')">Copy</button>
+          <button onclick="downloadCode('code-dfs-graph','dfs_graph.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-dfs-graph')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-dfs-graph" class="code"># dfs_graph.py
+
+def dfs(graph, node, visited):
+    if node not in visited:
+        visited.append(node)
+        for n in graph.get(node, []):
+            dfs(graph, n, visited)
+    return visited
+
+# Example 1
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': [],
+}
+visited = dfs(graph, 'A', [])
+print("Visited list")
+print(visited)
+
+# Example 2 (tree)
+graph2 = {
+    1: [2, 7, 8],
+    2: [3, 6],
+    3: [4, 5],
+    4: [],
+    5: [],
+    6: [],
+    7: [],
+    8: [9, 12],
+    9: [10, 11],
+    10: [],
+    11: [],
+    12: []
+}
+visited2 = dfs(graph2, 1, [])
+print("Visited list (tree):", visited2)
+
+# DFS with goal
+
+def dfs_goal(graph, node, visited, goal_node):
+    if node not in visited:
+        visited.append(node)
+        if node == goal_node:
+            print(f"Goal {goal_node} found!")
+            return True
+        for n in graph.get(node, []):
+            if dfs_goal(graph, n, visited, goal_node):
+                return True
+    return False
+
+visited_nodes_during_search = []
+if not dfs_goal(graph2, 1, visited_nodes_during_search, 7):
+    print("Goal not found")
+else:
+    print("Visited during goal search:", visited_nodes_during_search)
+</textarea>
+    </div>
+
+    <!-- Practical 2: BFS -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Practical 2 — bfs_graph.py</strong><div class="meta">Breadth First Search — examples</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-bfs-graph')">Copy</button>
+          <button onclick="downloadCode('code-bfs-graph','bfs_graph.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-bfs-graph')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-bfs-graph" class="code"># bfs_graph.py
+from collections import deque
+
+def bfs(graph, start_node):
+    visited = []
+    queue = deque([start_node])
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.append(node)
+            for neighbor in sorted(graph.get(node, [])):
+                if neighbor not in visited:
+                    queue.append(neighbor)
+    return visited
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': [],
+}
+visited_list = bfs(graph, 'A')
+print("Visited List:", visited_list)
+
+# Tree example
+graph2 = {
+    1: [2, 7, 8],
+    2: [3, 6],
+    3: [4, 5],
+    4: [],
+    5: [],
+    6: [],
+    7: [],
+    8: [9, 12],
+    9: [10, 11],
+    10: [],
+    11: [],
+    12: []
+}
+print("BFS (tree):", bfs(graph2, 1))
+
+# BFS with goal (returns visited up to goal)
+def bfs_with_goal(graph, start_node, goal_node):
+    visited = []
+    queue = deque([start_node])
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.append(node)
+            if node == goal_node:
+                print(f"Goal {goal_node} found!")
+                return visited
+            for neighbor in sorted(graph.get(node, [])):
+                if neighbor not in visited:
+                    queue.append(neighbor)
+    print(f"Goal {goal_node} not found in the graph.")
+    return visited
+
+print("BFS up to goal 6:", bfs_with_goal(graph2, 1, 6))
+</textarea>
+    </div>
+
+    <!-- Practical 3: N-Queens -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Practical 3 — n_queens.py</strong><div class="meta">N-Queens solver (backtracking)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-nqueens')">Copy</button>
+          <button onclick="downloadCode('code-nqueens','n_queens.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-nqueens')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-nqueens" class="code"># n_queens.py
+
+def is_safe(board, row, col, n):
+    for i in range(row):
+        if board[i][col] == 1:
+            return False
+    i, j = row, col
+    while i >= 0 and j >= 0:
+        if board[i][j] == 1:
+            return False
+        i -= 1; j -= 1
+    i, j = row, col
+    while i >= 0 and j < n:
+        if board[i][j] == 1:
+            return False
+        i -= 1; j += 1
+    return True
+
+
+def solve_n_queens(board, row, n, solutions):
+    if row == n:
+        solutions.append([r[:] for r in board])
+        return
+    for col in range(n):
+        if is_safe(board, row, col, n):
+            board[row][col] = 1
+            solve_n_queens(board, row + 1, n, solutions)
+            board[row][col] = 0
+
+
+def print_board(board):
+    for row in board:
+        print(" ".join(str(x) for x in row))
+    print()
+
+
+def n_queens():
+    r = int(input("Enter the number of queens (r): "))
+    board = [[0]*r for _ in range(r)]
+    solutions = []
+    solve_n_queens(board, 0, r, solutions)
+    print(f"Total solutions for {r} queens: {len(solutions)}\n")
+    for idx, sol in enumerate(solutions, start=1):
+        print(f"Solution {idx}:")
+        print_board(sol)
+
+if __name__ == '__main__':
+    n_queens()
+</textarea>
+    </div>
+
+    <!-- Practical 4: Uniform Cost Search -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Practical 4 — ucs_romanian.py</strong><div class="meta">Uniform Cost Search for Romanian cities</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-ucs')">Copy</button>
+          <button onclick="downloadCode('code-ucs','ucs_romanian.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-ucs')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-ucs" class="code"># ucs_romanian.py
+from queue import PriorityQueue
+
+GRAPH = {
+ 'Arad': {'Sibiu': 140, 'Zerind': 75, 'Timisoara': 118},
+ 'Zerind': {'Arad': 75, 'Oradea': 71},
+ 'Oradea': {'Zerind': 71, 'Sibiu': 151},
+ 'Sibiu': {'Arad': 140, 'Oradea': 151, 'Fagaras': 99, 'Rimnicu Vilcea': 80},
+ 'Timisoara': {'Arad': 118, 'Lugoj': 111},
+ 'Lugoj': {'Timisoara': 111, 'Mehadia': 70},
+ 'Mehadia': {'Lugoj': 70, 'Drobeta': 75},
+ 'Drobeta': {'Mehadia': 75, 'Craiova': 120},
+ 'Craiova': {'Drobeta': 120, 'Rimnicu Vilcea': 146, 'Pitesti': 138},
+ 'Rimnicu Vilcea': {'Sibiu': 80, 'Craiova': 146, 'Pitesti': 97},
+ 'Fagaras': {'Sibiu': 99, 'Bucharest': 211},
+ 'Pitesti': {'Rimnicu Vilcea': 97, 'Craiova': 138, 'Bucharest': 101},
+ 'Bucharest': {'Fagaras': 211, 'Pitesti': 101, 'Giurgiu': 90, 'Urziceni': 85},
+ 'Giurgiu': {'Bucharest': 90},
+ 'Urziceni': {'Bucharest': 85, 'Vaslui': 142, 'Hirsova': 98},
+ 'Hirsova': {'Urziceni': 98, 'Eforie': 86},
+ 'Eforie': {'Hirsova': 86},
+ 'Vaslui': {'Iasi': 92, 'Urziceni': 142},
+ 'Iasi': {'Vaslui': 92, 'Neamt': 87},
+ 'Neamt': {'Iasi': 87}
+}
+
+
+def ucs(source, destination):
+    pq = PriorityQueue()
+    visited = {}
+    pq.put((0, source, [source]))
+    visited[source] = 0
+    while not pq.empty():
+        cost, vertex, path = pq.get()
+        if vertex == destination:
+            return cost, path
+        for next_node, travel_cost in GRAPH.get(vertex, {}).items():
+            current_cost = cost + travel_cost
+            if next_node not in visited or visited[next_node] > current_cost:
+                visited[next_node] = current_cost
+                pq.put((current_cost, next_node, path + [next_node]))
+    return float('inf'), []
+
+if __name__ == '__main__':
+    source = input('ENTER SOURCE: ').strip()
+    goal = input('ENTER GOAL: ').strip()
+    if source not in GRAPH or goal not in GRAPH:
+        print('ERROR: CITY DOES NOT EXIST.')
+    else:
+        cost, path = ucs(source, goal)
+        if cost == float('inf'):
+            print('NO PATH FOUND')
+        else:
+            print('\nCHEAPEST PATH:')
+            print('PATH COST =', cost)
+            print(' -> '.join(path))
+</textarea>
+    </div>
+
+    <!-- Practical 5: A* -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Practical 5 — a_star_romanian.py</strong><div class="meta">A* search with heuristic for Romanian map</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-astar')">Copy</button>
+          <button onclick="downloadCode('code-astar','a_star_romanian.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-astar')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-astar" class="code"># a_star_romanian.py
+from queue import PriorityQueue
+
+GRAPH = {
+ # same GRAPH as ucs_romanian (omitted here for brevity) - copy the GRAPH block from ucs_romanian.py if running
+}
+
+heuristic = {
+ 'Arad': 366, 'Zerind': 374, 'Oradea': 380, 'Sibiu': 253, 'Timisoara': 329,
+ 'Lugoj': 244, 'Mehadia': 241, 'Drobeta': 242, 'Craiova': 160, 'Rimnicu Vilcea': 193,
+ 'Fagaras': 176, 'Pitesti': 100, 'Bucharest': 0, 'Giurgiu': 77, 'Urziceni': 80,
+ 'Hirsova': 151, 'Eforie': 161, 'Vaslui': 199, 'Iasi': 226, 'Neamt': 234
+}
+
+
+def a_star(source, destination):
+    pq = PriorityQueue()
+    pq.put((heuristic.get(source, 0), 0, source, [source]))
+    visited = {}
+    while not pq.empty():
+        priority, cost, vertex, path = pq.get()
+        if vertex == destination:
+            return priority, cost, path
+        if vertex in visited and visited[vertex] <= cost:
+            continue
+        visited[vertex] = cost
+        for next_node, distance in GRAPH.get(vertex, {}).items():
+            current_cost = cost + distance
+            total_cost = current_cost + heuristic.get(next_node, 0)
+            if next_node not in visited or visited[next_node] > current_cost:
+                pq.put((total_cost, current_cost, next_node, path + [next_node]))
+    return None, None, None
+
+if __name__ == '__main__':
+    source = input('ENTER SOURCE: ').strip()
+    destination = input('ENTER GOAL: ').strip()
+    # ensure GRAPH is defined above when using
+    hval, cost, path = a_star(source, destination)
+    if path:
+        print('\nOptimal path:')
+        print('Heuristic:', hval)
+        print('Path cost:', cost)
+        print('Path:', ' > '.join(path))
+    else:
+        print('No path found')
+</textarea>
+    </div>
+
+    <!-- Practical 6: Prompts / C# examples (one-shot) -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Practical 6 — prompts_and_csharp.txt</strong><div class="meta">Prompt engineering notes + C# examples (one-shot/zero-shot)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-prompts')">Copy</button>
+          <button onclick="downloadCode('code-prompts','prompts_and_csharp.txt')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-prompts')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-prompts" class="code">// One-shot C# example from document
+using System;
+class Program {
+    static void Main() {
+        Console.WriteLine("Hello, World!");
+    }
+}
+
+// Task: now write a C# .NET Core console program that asks the user for their name and prints "Hello, [name]!" - (exercise)
+
+// Zero-shot prompt example (description in the doc):
+// "Write a C# .NET Core console program that connects to a SQL Server database and displays all rows from a table named Students"
+
+// Practical notes: store prompts and outputs in the report. Use clear instructions, expected format, and example inputs/outputs when evaluating LLMs.
+</textarea>
+    </div>
+
+    <!-- Practical 7: Task Specific Prompts (instructions only) -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Practical 7 — task_specific_prompts.txt</strong><div class="meta">Tasks, prompts, expected formats and observations (text)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-taskprompts')">Copy</button>
+          <button onclick="downloadCode('code-taskprompts','task_specific_prompts.txt')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-taskprompts')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-taskprompts" class="code">// This card holds the Task-specific prompts section from the doc. Examples include:
+// Task 1: Summarization - Prompt: Summarize this article in 3 bullet points, each under 12 words.
+// Task 2: Q&A - Prompt: Answer question from passage. Expected: 2-3 sentence paragraph.
+// Task 3: Translation - Prompt: Translate into French. Expected: Single sentence.
+// ... (see document for full details and observations)
+</textarea>
+    </div>
+
+    <!-- Practical 8: NLTK (stemming, tokenization, lemmatization) -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Practical 8 — nltk_examples.py</strong><div class="meta">Stemming, tokenization & lemmatization examples (NLTK)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-nltk')">Copy</button>
+          <button onclick="downloadCode('code-nltk','nltk_examples.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-nltk')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-nltk" class="code"># nltk_examples.py
+import nltk
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+
+print("********** Stemming Example **********")
+wordset1 = ['playing', 'played', 'plays', 'studies', 'running', 'happily']
+for word in wordset1:
+    print(f"{word} --> {stemmer.stem(word)}")
+
+print("\n********** Lemmatization Example **********")
+text2 = "The striped bats are hanging on their feet for best"
+tokens = word_tokenize(text2)
+print("Original Text:", text2)
+print("Tokenized Words:", tokens)
+print("Stemmed:", [stemmer.stem(w.lower()) for w in tokens])
+print("Lemmatized:", [lemmatizer.lemmatize(w) for w in tokens])
+</textarea>
+    </div>
+
+    <!-- Practical 9: Text Classification (scikit-learn) -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Practical 9 — text_classification_nb.py</strong><div class="meta">Naive Bayes text classification (scikit-learn)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-nb')">Copy</button>
+          <button onclick="downloadCode('code-nb','text_classification_nb.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-nb')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-nb" class="code"># text_classification_nb.py
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.feature_extraction.text import CountVectorizer
+
+documents = [
+    "This is a positive review",
+    "Great product, highly recommend",
+    "Terrible experience, very disappointed.",
+    "Not satisfied with the service",
+    "Excellent quality and fast delivery"
+]
+labels = ["positive","positive","negative","negative","positive"]
+
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(documents)
+model = MultinomialNB()
+model.fit(X, labels)
+
+new_documents = ["This product is amazing!", "I am very disappointed with this movie"]
+new_X = vectorizer.transform(new_documents)
+prediction = model.predict(new_X)
+print("The new documents are classified as:", prediction)
+</textarea>
+    </div>
+
+    <!-- Practical 10: HuggingFace & Gemini examples -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Practical 10 — transformers_and_gemini_examples.py</strong><div class="meta">HuggingFace pipelines and Google Gemini client examples</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-hf')">Copy</button>
+          <button onclick="downloadCode('code-hf','transformers_and_gemini_examples.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-hf')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-hf" class="code"># transformers_and_gemini_examples.py
+# NOTE: transformers and google.generativeai require installation and API credentials.
+
+# HuggingFace text generation (gpt2)
+from transformers import pipeline
+
+def hf_text_generation():
+    generator = pipeline("text-generation", model="gpt2")
+    prompt = "AI in education will"
+    outputs = generator(prompt, max_new_tokens=10, pad_token_id=50256)
+    print(outputs[0]['generated_text'])
+
+# HuggingFace summarization
+from transformers import pipeline as pipeline2
+
+def hf_summarization():
+    summarizer = pipeline2("summarization", model="sshleifer/distilbart-cnn-12-6")
+    article = ("Natural Language Processing (NLP) is a field of artificial intelligence that focuses on the interaction "
+               "between computers and human language. It enables tasks such as text classification, translation, summarization, and question answering.")
+    summ = summarizer(article, max_new_tokens=50, min_length=15, do_sample=False)
+    print(summ[0]['summary_text'])
+
+# Gemini examples (requires google.generativeai and API key)
+import google.generativeai as genai
+
+def gemini_text_example(api_key):
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    prompt = "Write a short poem about sunrise."
+    response = model.generate_content(prompt)
+    print("Gemini Response:\n", response.text)
+
+# Use these functions in your environment where libraries & keys are available.
+</textarea>
+    </div>
+
+    <p class="meta">I included all the code blocks from your document and organised them into sections like your submitted HTML. Open the file in the canvas to copy or download each snippet. If you want a ZIP with all files, tell me and I'll bundle them.</p>
+  </div>
+</body>
+</html>
