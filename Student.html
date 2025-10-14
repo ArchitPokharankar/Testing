@@ -1,177 +1,177 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Project - Corrected Code</title>
-    <style>
-        body { 
-            font-family: Consolas, 'Courier New', monospace; 
-            background-color: #f4f4f4; 
-            color: #333; 
-            padding: 20px; 
-            line-height: 1.6;
-        }
-        h1 { 
-            color: #1a1a1a; 
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-        }
-        h2 { 
-            color: #0056b3; 
-            margin-top: 40px;
-        }
-        pre { 
-            background: #fff; 
-            padding: 15px; 
-            border: 1px solid #ddd;
-            border-left: 5px solid #007bff;
-            border-radius: 5px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
-            overflow-x: auto; 
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        code { 
-            font-family: Consolas, 'Courier New', monospace; 
-        }
-        .path {
-             font-size: 0.9em; 
-             color: #555;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Data Visualization Demo — HTML Code Viewer</title>
+  <style>
+    body{font-family:Inter,Arial,sans-serif;background:#0f172a;color:#e6eef8;padding:24px}
+    .container{max-width:1100px;margin:0 auto}
+    h1{font-size:22px;margin-bottom:6px}
+    p.lead{color:#9fb0d6}
+    .card{background:#071020;border:1px solid #113;padding:14px;border-radius:10px;margin:18px 0}
+    .controls{margin-bottom:8px}
+    button{background:#1e40af;color:white;border:0;padding:8px 10px;border-radius:6px;margin-right:8px;cursor:pointer}
+    button.secondary{background:#334155}
+    textarea.code{width:100%;height:500px;background:#001219;color:#dbeafe;border-radius:8px;border:0;padding:12px;font-family:monospace;font-size:12px;white-space:pre;overflow:auto}
+    .meta{font-size:12px;color:#9fb0d6}
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Data Visualization Script — HTML Code Viewer</h1>
+    <p class="lead">This HTML includes a Python script demonstrating multiple data visualizations with seaborn and matplotlib. You can copy or download it directly from below.</p>
 
-    <h1>ASP.NET Core MVC - Student Project 🧑‍🎓</h1>
+    <script>
+      function copyCode(id){
+        const ta=document.getElementById(id);
+        ta.select();
+        document.execCommand('copy');
+        alert('Copied to clipboard');
+      }
+      function downloadCode(id,filename){
+        const code=document.getElementById(id).value;
+        const blob=new Blob([code],{type:'text/plain'});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+        URL.revokeObjectURL(url);
+      }
+      function toggleWrap(id){
+        const ta=document.getElementById(id);
+        ta.style.whiteSpace=(ta.style.whiteSpace==='pre'?'pre-wrap':'pre');
+      }
+    </script>
 
-    <h2>1. Model <span class="path">(Models/Student.cs)</span></h2>
-    <pre><code>
-// File: Models/Student.cs
+    <div class="card">
+      <div class="controls">
+        <strong>visualization_demo.py</strong>
+        <div class="meta">Comprehensive data visualization script using pandas, seaborn, matplotlib, and numpy.</div>
+        <button onclick="copyCode('viz-code')">Copy</button>
+        <button onclick="downloadCode('viz-code','visualization_demo.py')">Download</button>
+        <button class="secondary" onclick="toggleWrap('viz-code')">Toggle Wrap</button>
+      </div>
+      <textarea id="viz-code" class="code">import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
-namespace StudentProject.Models
-{
-    public class Student
-    {
-        // It's standard practice in C# to use PascalCase for properties.
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public string Course { get; set; }
+# --- SCRIPT SETUP ---
+# IMPORTANT: Replace "your_dataset.csv" with the actual path to your data file.
+try:
+    df = pd.read_csv("your_dataset.csv")
+except FileNotFoundError:
+    print("Error: 'your_dataset.csv' not found. Please update the file path.")
+    # Create a dummy dataframe for demonstration purposes if file is not found
+    data = {
+        'Age': np.random.randint(18, 50, 200),
+        'Income': np.random.randint(20000, 90000, 200),
+        'Spending_Score': np.random.randint(1, 100, 200),
+        'Gender': np.random.choice(['Male', 'Female'], 200),
+        'Membership': np.random.choice(['Gold', 'Silver', 'Platinum'], 200),
+        'Satisfaction_Score': np.random.uniform(1, 5, 200).round(1),
+        'Visits_per_Month': np.random.randint(0, 12, 200),
+        'Region': np.random.choice(['North', 'South', 'East', 'West'], 200)
     }
-}
-    </code></pre>
+    df = pd.DataFrame(data)
+    print("--- Using sample data for demonstration. ---")
 
-    <h2>2. Controller <span class="path">(Controllers/StudentController.cs)</span></h2>
-    <pre><code>
-// File: Controllers/StudentController.cs
+# --- 1. Mean, Median, Mode ---
+print("\n=== 1. Mean, Median, Mode for 'Income' ===")
+mean_val = df['Income'].mean()
+median_val = df['Income'].median()
+mode_val = df['Income'].mode()[0]
+print(f"Mean: {mean_val:.2f}")
+print(f"Median: {median_val:.2f}")
+print(f"Mode: {mode_val}")
+if abs(mean_val - median_val) < (0.1 * df['Income'].std()):
+    print("✅ Data is approximately symmetric.")
+else:
+    print("⚠️ Data may be skewed.")
 
-using Microsoft.AspNetCore.Mvc;
-using StudentProject.Models; // Use your actual project name
-using System.Collections.Generic;
-using System.Linq;
+# --- 2. Bar Plot & Stacked Bar Plot ---
+print("\n=== 2. Generating Bar Plots ===")
+sns.countplot(data=df, x='Gender')
+plt.title("Bar Plot - Gender Distribution")
+plt.show()
 
-namespace StudentProject.Controllers
-{
-    public class StudentController : Controller
-    {
-        // This static list acts as a simple in-memory database.
-        private static List&lt;Student&gt; students = new List&lt;Student&gt;
-        {
-            new Student { Id = 1, Name = "Mukesh", Age = 21, Course = "Computer Science" },
-            new Student { Id = 2, Name = "Raj", Age = 23, Course = "Bio Technology" }
-        };
+pd.crosstab(df['Membership'], df['Gender']).plot(kind='bar', stacked=True)
+plt.title("Stacked Bar Plot - Membership by Gender")
+plt.xlabel("Membership")
+plt.ylabel("Count")
+plt.xticks(rotation=0)
+plt.show()
 
-        // This action shows the list of all students.
-        // GET: /Student/ or /Student/Index
-        public IActionResult Index()
-        {
-            // Pass the list of students to the corresponding View.
-            return View(students);
-        }
+# --- 3. Pie Chart ---
+print("\n=== 3. Generating Pie Chart ===")
+df['Region'].value_counts().plot.pie(autopct='%1.1f%%', startangle=90)
+plt.title("Pie Chart - Region Distribution")
+plt.ylabel("")
+plt.show()
 
-        // This action displays the form to add a new student.
-        // GET: /Student/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+# --- 4. Histogram ---
+print("\n=== 4. Generating Histogram ===")
+df['Income'].plot.hist(bins=20, edgecolor='black')
+plt.title("Histogram - Income Distribution")
+plt.xlabel("Income")
+plt.ylabel("Frequency")
+plt.show()
 
-        // This action handles the form submission.
-        // POST: /Student/Create
-        [HttpPost]
-        public IActionResult Create(Student student)
-        {
-            // A simple way to generate a new unique ID.
-            student.Id = students.Any() ? students.Max(s => s.Id) + 1 : 1;
-            students.Add(student);
-            
-            // Redirect back to the Index page to show the updated list.
-            return RedirectToAction("Index");
-        }
-    }
-}
-    </code></pre>
+# --- 5. Scatter Plot ---
+print("\n=== 5. Generating Scatter Plot ===")
+sns.scatterplot(data=df, x='Age', y='Spending_Score', hue='Gender')
+plt.title("Scatter Plot - Age vs. Spending Score")
+plt.show()
 
-    <h2>3. Index View <span class="path">(Views/Student/Index.cshtml)</span></h2>
-    <pre><code>
-&lt;!-- File: Views/Student/Index.cshtml --&gt;
+# --- 6. Box Plot ---
+print("\n=== 6. Generating Box Plot ===")
+sns.boxplot(data=df, x='Membership', y='Satisfaction_Score')
+plt.title("Box Plot - Satisfaction Score by Membership")
+plt.show()
 
-@model IEnumerable&lt;StudentProject.Models.Student&gt;
+# --- 7. Line Chart ---
+print("\n=== 7. Generating Line Chart ===")
+df.groupby('Age')['Spending_Score'].mean().plot(kind='line')
+plt.title("Line Chart - Average Spending Score by Age")
+plt.xlabel("Age")
+plt.ylabel("Average Spending Score")
+plt.grid(True)
+plt.show()
 
-&lt;h2&gt;Student List&lt;/h2&gt;
+# --- 8. Violin Plot ---
+print("\n=== 8. Generating Violin Plot ===")
+sns.violinplot(data=df, x='Region', y='Visits_per_Month')
+plt.title("Violin Plot - Visits per Month by Region")
+plt.show()
 
-&lt;!-- Link to the Create page --&gt;
-&lt;a class="btn btn-primary mb-3" href="/Student/Create"&gt;Add New Student&lt;/a&gt;
+# --- 9. Swarm Plot ---
+print("\n=== 9. Generating Swarm Plot ===")
+sample_df = df.sample(n=100 if len(df) > 100 else len(df))
+sns.swarmplot(data=sample_df, x='Gender', y='Satisfaction_Score', hue='Membership')
+plt.title("Swarm Plot - Satisfaction by Gender & Membership")
+plt.show()
 
-&lt;table class="table table-bordered table-striped"&gt;
-    &lt;thead class="thead-dark"&gt;
-        &lt;tr&gt;
-            &lt;th&gt;ID&lt;/th&gt;
-            &lt;th&gt;Name&lt;/th&gt;
-            &lt;th&gt;Age&lt;/th&gt;
-            &lt;th&gt;Course&lt;/th&gt;
-        &lt;/tr&gt;
-    &lt;/thead&gt;
-    &lt;tbody&gt;
-        @foreach (var student in Model)
-        {
-            &lt;tr&gt;
-                &lt;td&gt;@student.Id&lt;/td&gt;
-                &lt;td&gt;@student.Name&lt;/td&gt;
-                &lt;td&gt;@student.Age&lt;/td&gt;
-                &lt;td&gt;@student.Course&lt;/td&gt;
-            &lt;/tr&gt;
-        }
-    &lt;/tbody&gt;
-&lt;/table&gt;
-    </code></pre>
+# --- 10. Donut Chart ---
+print("\n=== 10. Generating Donut Chart ===")
+membership_counts = df['Membership'].value_counts()
+plt.pie(membership_counts, labels=membership_counts.index, autopct='%1.1f%%', startangle=90, wedgeprops=dict(width=0.4))
+plt.title("Donut Chart - Membership Distribution")
+plt.show()
 
-    <h2>4. Create View <span class="path">(Views/Student/Create.cshtml)</span></h2>
-    <pre><code>
-&lt;!-- File: Views/Student/Create.cshtml --&gt;
+# --- 11. 3D Scatter Plot ---
+print("\n=== 11. Generating 3D Scatter Plot ===")
+fig = plt.figure(figsize=(8, 6))
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(df['Age'], df['Income'], df['Spending_Score'], c='skyblue', s=30)
+ax.set_xlabel('Age')
+ax.set_ylabel('Income')
+ax.set_zlabel('Spending Score')
+plt.title("3D Scatter Plot - Age, Income, and Spending")
+plt.show()
 
-@model StudentProject.Models.Student
-
-&lt;h2&gt;Create New Student&lt;/h2&gt;
-
-&lt;!-- This form will POST data to the 'Create' action in StudentController --&gt;
-&lt;form asp-action="Create" method="post"&gt;
-    &lt;div class="form-group mb-3"&gt;
-        &lt;label asp-for="Name"&gt;&lt;/label&gt;
-        &lt;input asp-for="Name" class="form-control" /&gt;
-    &lt;/div&gt;
-    &lt;div class="form-group mb-3"&gt;
-        &lt;label asp-for="Age"&gt;&lt;/label&gt;
-        &lt;input asp-for="Age" class="form-control" type="number" /&gt;
-    &lt;/div&gt;
-    &lt;div class="form-group mb-3"&gt;
-        &lt;label asp-for="Course"&gt;&lt;/label&gt;
-        &lt;input asp-for="Course" class="form-control" /&gt;
-    &lt;/div&gt;
-    &lt;button type="submit" class="btn btn-success"&gt;Save Student&lt;/button&gt;
-&lt;/form&gt;
-    </code></pre>
-
+print("\n--- All visualizations generated. ---")</textarea>
+    </div>
+  </div>
 </body>
 </html>
