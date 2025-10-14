@@ -1,175 +1,474 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Practical 5 & 6 - ASP.NET Core Login Form</title>
-<style>
-    body { 
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-        background-color: #f0f2f5; 
-        color: #333; 
-        padding: 25px; 
-        line-height: 1.6;
-    }
-    .container {
-        max-width: 900px;
-        margin: auto;
-    }
-    h1, h2 { 
-        color: #005a9e;
-        border-bottom: 2px solid #ddd;
-        padding-bottom: 10px;
-    }
-    h2 {
-        font-size: 1.5em;
-        margin-top: 40px;
-    }
-    p.filepath {
-        font-family: Consolas, 'Courier New', monospace;
-        background-color: #e7e7e7;
-        padding: 5px 10px;
-        border-radius: 5px;
-        color: #d63384;
-        font-weight: bold;
-    }
-    pre { 
-        background: #fff; 
-        padding: 15px; 
-        border-radius: 8px; 
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-        overflow-x: auto; 
-        border-left: 5px solid #005a9e;
-    }
-    code { 
-        font-family: Consolas, 'Courier New', monospace; 
-        font-size: 0.95em;
-    }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ethical Hacking Practicals — Step-by-step</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8;--glass:rgba(255,255,255,0.03)}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#071124 0%,#081226 100%);color:#e6eef8;margin:0;padding:24px}
+    .container{max-width:1100px;margin:0 auto}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    h1{font-size:20px;margin:0}
+    p.sub{margin:0;color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 6px 20px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    .sec-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    button.small{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent);padding:6px 10px;border-radius:8px;cursor:pointer}
+    .steps{margin-top:10px;color:#cfe8f2}
+    pre{background:var(--glass);padding:12px;border-radius:8px;overflow:auto;color:#dff6fb;font-size:13px}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,monospace}
+    .controls{display:flex;gap:8px}
+    .toggle{background:#0b1220;border:0;color:var(--accent);cursor:pointer;padding:6px 8px;border-radius:8px}
+    .copy{background:#0b1220;border:0;color:#9ef0ff;cursor:pointer;padding:6px 8px;border-radius:8px}
+    .hidden{display:none}
+    details summary{list-style:none;cursor:pointer}
+    details summary::-webkit-details-marker{display:none}
+    .note{font-size:13px;color:var(--muted);margin-top:8px}
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+    .top-actions{margin-left:auto;display:flex;gap:8px}
+    @media(min-width:900px){.grid{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Ethical Hacking Practicals — Step-by-step</h1>
+        <p class="sub">Single-file HTML with expandable practicals, commands, and copy buttons (based on your PDF).</p>
+      </div>
+      <div class="top-actions">
+        <button class="small" onclick="expandAll()">Expand all</button>
+        <button class="small" onclick="collapseAll()">Collapse all</button>
+      </div>
+    </header>
 
-<div class="container">
-    <h1>Practical 5 & 6: Login Form with Validation in ASP.NET Core MVC</h1>
-    <p>This file contains all the code needed to create a login form with model binding, client-side, and server-side validation. Copy and paste each section into the specified file in your Visual Studio project.</p>
+    <main class="grid">
+      <!-- Practical 1 -->
+      <section class="card" id="p1">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 1 — Cryptography (Symmetric, Asymmetric, Hashing)</strong>
+            <div class="note">Tools: CryptoTool, HashCalc, HashMyFiles</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p1-steps')">Toggle</button>
+            <button class="copy" data-target="p1-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
 
-    <h2>1️⃣ The Model: `LoginViewModel.cs`</h2>
-    <p class="filepath">File Location: Models/LoginViewModel.cs</p>
-    <p>This class defines the data properties (Email, Password) and their validation rules.</p>
-    <pre><code>using System.ComponentModel.DataAnnotations;
+        <div id="p1-steps" class="steps hidden">
+          <ol>
+            <li>Open CryptoTool &gt; Choose Caesar Cipher. Enter key (e.g., 3). Encrypt/Decrypt to observe.</li>
+            <li>Vigenère: CryptoTool &gt; Vigenère. Enter keyword (e.g., KEY). Encrypt/Decrypt.</li>
+            <li>RSA: CryptoTool &gt; RSA &gt; Generate keys. Encrypt with public key; decrypt with private key.</li>
+            <li>Hashing: Use HashCalc/HashMyFiles/CryptoTool to compute MD5, SHA1, SHA256 for text or files.</li>
+          </ol>
 
-namespace LoginValidationExample.Models
-{
-    public class LoginViewModel
-    {
-        [Required(ErrorMessage = "Please enter your email address.")]
-        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
-        public string Email { get; set; }
+          <div class="note">Below: example commands & minimal scripts that illustrate hashing and RSA with Python (for study only).</div>
 
-        [Required(ErrorMessage = "Please enter your password.")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-    }
-}</code></pre>
+          <pre id="p1-code"><code>## Example: Compute MD5 / SHA256 hashes in Python
+import hashlib
+text = b"hello world"
+md5 = hashlib.md5(text).hexdigest()
+sha256 = hashlib.sha256(text).hexdigest()
+print('MD5:', md5)
+print('SHA256:', sha256)
 
-    <h2>2️⃣ The Controller: `HomeController.cs`</h2>
-    <p class="filepath">File Location: Controllers/HomeController.cs</p>
-    <p>Add the <code>using</code> statement and the three new action methods (<code>Login</code> GET, <code>Login</code> POST, and <code>Welcome</code>) to your existing <code>HomeController</code>.</p>
-    <pre><code>using Microsoft.AspNetCore.Mvc;
-using LoginValidationExample.Models; // &lt;-- Add this using statement
-
-namespace LoginValidationExample.Controllers
-{
-    public class HomeController : Controller
-    {
-        // ... (Your existing Index and Privacy actions are here) ...
-
-        // GET: /Home/Login
-        // This action shows the empty login form
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        // POST: /Home/Login
-        // This action handles the form submission
-        [HttpPost]
-        public IActionResult Login(LoginViewModel model)
-        {
-            // Server-side validation check
-            if (ModelState.IsValid)
-            {
-                // In a real app, you would check credentials against a database.
-                // For this example, we'll just redirect to a "Welcome" page on success.
-                return RedirectToAction("Welcome");
-            }
-
-            // If ModelState is NOT valid, return the view with the model
-            // to display validation error messages.
-            return View(model);
-        }
-
-        // A simple action to redirect to after a successful login
-        public IActionResult Welcome()
-        {
-            return View();
-        }
-    }
-}</code></pre>
-
-    <h2>3️⃣ The View: `Login.cshtml`</h2>
-    <p class="filepath">File Location: Views/Home/Login.cshtml</p>
-    <p>This is the HTML form the user will see. It uses Tag Helpers to bind to the model and display validation messages.</p>
-    <pre><code>@model LoginValidationExample.Models.LoginViewModel
-@{
-    ViewData["Title"] = "Login";
-}
-
-<h1>Login</h1>
-
-&lt;div class="row"&gt;
-    &lt;div class="col-md-4"&gt;
-        &lt;form asp-action="Login" method="post"&gt;
-            &lt;div asp-validation-summary="ModelOnly" class="text-danger"&gt;&lt;/div&gt;
-            
-            &lt;div class="form-group"&gt;
-                &lt;label asp-for="Email" class="control-label"&gt;&lt;/label&gt;
-                &lt;input asp-for="Email" class="form-control" /&gt;
-                &lt;span asp-validation-for="Email" class="text-danger"&gt;&lt;/span&gt;
-            &lt;/div&gt;
-            
-            &lt;div class="form-group"&gt;
-                &lt;label asp-for="Password" class="control-label"&gt;&lt;/label&gt;
-                &lt;input asp-for="Password" class="form-control" /&gt;
-                &lt;span asp-validation-for="Password" class="text-danger"&gt;&lt;/span&gt;
-            &lt;/div&gt;
-            
-            &lt;div class="form-group" style="margin-top: 15px;"&gt;
-                &lt;input type="submit" value="Log In" class="btn btn-primary" /&gt;
-            &lt;/div&gt;
-        &lt;/form&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+## Example: RSA using PyCryptodome (install with pip install pycryptodome)
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+key = RSA.generate(2048)
+priv = key.export_key()
+pub = key.publickey().export_key()
+# Encrypt
+cipher = PKCS1_OAEP.new(RSA.import_key(pub))
+ciphertext = cipher.encrypt(b"Secret message")
+# Decrypt
+decipher = PKCS1_OAEP.new(RSA.import_key(priv))
+print(decipher.decrypt(ciphertext))
 </code></pre>
+        </div>
+      </section>
 
-    <h2>4️⃣ The Welcome View: `Welcome.cshtml`</h2>
-    <p class="filepath">File Location: Views/Home/Welcome.cshtml</p>
-    <p>A simple page to show that the login was successful.</p>
-    <pre><code>@{
-    ViewData["Title"] = "Welcome";
-}
+      <!-- Practical 2 -->
+      <section class="card" id="p2">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 2 — Hashcat (Crack MD5 &amp; SHA-256)</strong>
+            <div class="note">Tools: Hashcat (download .7z). Use Windows CMD or PowerShell.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p2-steps')">Toggle</button>
+            <button class="copy" data-target="p2-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
 
-&lt;div class="text-center"&gt;
-    &lt;h1 class="display-4"&gt;Welcome!&lt;/h1&gt;
-    &lt;p&gt;You have successfully logged in.&lt;/p&gt;
-&lt;/div&gt;
+        <div id="p2-steps" class="steps hidden">
+          <ol>
+            <li>Download Hashcat (7z). Extract to a folder.</li>
+            <li>Create <code>abc.txt</code> containing the hash and <code>wordlist.txt</code> with candidate passwords.</li>
+            <li>Move both files into Hashcat folder. Open CMD &amp; cd into that folder.</li>
+            <li>Run:
+              <pre><code>hashcat.exe -m 0 -a 0 abc.txt wordlist.txt   # MD5
+hashcat.exe -m 1400 -a 0 abc.txt wordlist.txt # SHA256</code></pre>
+            </li>
+            <li>If the password is in the wordlist, Hashcat will recover it.</li>
+          </ol>
+
+          <pre id="p2-code"><code># Example: Make a simple wordlist (Linux/Mac/WSL/Cygwin)
+echo -e "password
+123456
+letmein
+admin" > wordlist.txt
+
+# Example: get md5 of string (PowerShell)
+"hello" | Out-File -Encoding ASCII tmp.txt; Get-FileHash tmp.txt -Algorithm MD5
 </code></pre>
+        </div>
+      </section>
 
-</div>
+      <!-- Practical 3 -->
+      <section class="card" id="p3">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 3 — Google Dorks &amp; Reconnaissance</strong>
+            <div class="note">Use the provided dork queries in Google search. Example Python whois shown below.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p3-steps')">Toggle</button>
+            <button class="copy" data-target="p3-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
 
+        <div id="p3-steps" class="steps hidden">
+          <ol>
+            <li>Run the Google DORKS from the PDF in Google search exactly as written (e.g., <code>filetype:pdf site:nasa.gov</code>).</li>
+            <li>Reconnaissance: use Python whois to fetch domain metadata.</li>
+          </ol>
+
+          <pre id="p3-code"><code># whois example (install python-whois)
+# pip install python-whois
+import whois
+domain = whois.whois('www.yahoo.co.in')
+print(domain)
+</code></pre>
+        </div>
+      </section>
+
+      <!-- Practical 4 -->
+      <section class="card" id="p4">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 4 — Cryptanalysis using CryptoTool</strong>
+            <div class="note">Open CryptoTool and perform encrypt/decrypt for each listed cipher.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p4-steps')">Toggle</button>
+            <button class="copy" data-target="p4-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
+
+        <div id="p4-steps" class="steps hidden">
+          <ol>
+            <li>Use CryptoTool: Caesar, Vigenère, Playfair — encrypt and decrypt sample plaintexts.</li>
+            <li>DES (ECB), AES (CBC), RC4: use example keys and modes; compare ciphertexts.</li>
+            <li>For RC4 brute-force: use CryptoTool's entropy/brute options as described in the PDF.</li>
+          </ol>
+
+          <pre id="p4-code"><code># Example: AES-CBC with PyCryptodome (study only)
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+key = b"16bytecipherkey!"
+iv = b"16bytesivvector"
+cipher = AES.new(key, AES.MODE_CBC, iv)
+ciphertext = cipher.encrypt(pad(b"Secret Message", 16))
+print(ciphertext.hex())
+# Decrypt
+plain = unpad(AES.new(key, AES.MODE_CBC, iv).decrypt(ciphertext), 16)
+print(plain)
+</code></pre>
+        </div>
+      </section>
+
+      <!-- Practical 5 -->
+      <section class="card" id="p5">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 5 — Networking Commands</strong>
+            <div class="note">Run these in Windows CMD or PowerShell.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p5-steps')">Toggle</button>
+            <button class="copy" data-target="p5-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
+
+        <div id="p5-steps" class="steps hidden">
+          <ol>
+            <li><code>ipconfig</code> and variants: <code>ipconfig /flushdns</code>, <code>/release</code>, <code>/renew</code>.</li>
+            <li><code>netstat -a</code>, <code>-s</code>, <code>-r</code>, <code>-i</code>, <code>-f</code>.</li>
+            <li><code>ping www.google.com</code> with options (<code>-i</code>, <code>-s</code>, <code>-w</code>).</li>
+            <li><code>tracert</code> options: <code>-h</code>, <code>-w</code>, <code>-4</code>, <code>-d</code>.</li>
+            <li><code>arp -a</code>, <code>arp -s</code>, <code>arp -d</code>.</li>
+            <li><code>tasklist</code>, <code>systeminfo</code>, <code>gpupdate</code>, <code>chkdsk</code>.</li>
+          </ol>
+
+          <pre id="p5-code"><code>ipconfig
+ipconfig /flushdns
+netstat -a
+ping -n 4 www.google.com
+tracert -h 5 www.google.com
+arp -a
+</code></pre>
+        </div>
+      </section>
+
+      <!-- Practical 6 -->
+      <section class="card" id="p6">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 6 — Cain &amp; Abel (Dictionary Attack)</strong>
+            <div class="note">Install Npcap + Cain&amp;Abel. Run with admin privileges.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p6-steps')">Toggle</button>
+            <button class="copy" data-target="p6-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
+
+        <div id="p6-steps" class="steps hidden">
+          <ol>
+            <li>Disable firewall (for lab only). Install Npcap, install Cain &amp; Abel, extract &amp; run.</li>
+            <li>In Cracker tab, paste MD5 hash &gt; choose algorithm &gt; Right-click &gt; Dictionary Attack.</li>
+            <li>Observe results if wordlist contains the plaintext.</li>
+          </ol>
+
+          <pre id="p6-code"><code># No code: GUI-driven tool. Use the PDF instructions to follow the GUI steps.
+</code></pre>
+        </div>
+      </section>
+
+      <!-- Practical 7 -->
+      <section class="card" id="p7">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 7 — ARP Poisoning with Cain &amp; Abel</strong>
+            <div class="note">Network changes needed: disable IPv6, edit IPv4 DNS advanced checkboxes.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p7-steps')">Toggle</button>
+            <button class="copy" data-target="p7-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
+
+        <div id="p7-steps" class="steps hidden">
+          <ol>
+            <li>Configure network adapter as per PDF, open Cain &amp; Abel, select device in Configure.</li>
+            <li>Start Sniffer &gt; Scan MAC addresses &gt; Add target to APR &gt; Start ARP poisoning.</li>
+            <li>Monitor sniffed credentials in the GUI while the victim logs in to a vulnerable site.</li>
+          </ol>
+
+          <pre id="p7-code"><code># GUI procedure — follow the PDF screenshots and steps.
+</code></pre>
+        </div>
+      </section>
+
+      <!-- Practical 8 -->
+      <section class="card" id="p8">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 8 — Scanning using Nmap</strong>
+            <div class="note">Commands below can be run in terminal (install nmap).</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p8-steps')">Toggle</button>
+            <button class="copy" data-target="p8-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
+
+        <div id="p8-steps" class="steps hidden">
+          <ol>
+            <li>Intense Scan / Quick Scan via Nmap GUI or:
+              <pre><code>nmap -T4 -A -v target.example.com   # intense
+nmap -T4 -F target.example.com          # quick</code></pre>
+            </li>
+            <li>SYN scan: <code>nmap -sS target</code></li>
+            <li>ACK scan: <code>nmap -sA target</code></li>
+            <li>FIN: <code>nmap -sF target</code> | NULL: <code>nmap -sN target</code> | XMAS: <code>nmap -sX target</code></li>
+          </ol>
+
+          <pre id="p8-code"><code>nmap -sS www.google.com
+nmap -sA www.google.com
+nmap -sF www.google.com
+nmap -sN www.google.com
+nmap -sX www.google.com
+</code></pre>
+        </div>
+      </section>
+
+      <!-- Practical 9 -->
+      <section class="card" id="p9">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 9 — Wireshark (Sniffer)</strong>
+            <div class="note">Capture traffic, apply filters, and interpret HTTP responses.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p9-steps')">Toggle</button>
+            <button class="copy" data-target="p9-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
+
+        <div id="p9-steps" class="steps hidden">
+          <ol>
+            <li>Start Wireshark capture on the correct adapter.</li>
+            <li>Use filters such as: <code>ip.addr==192.168.0.107</code>, <code>http</code>, <code>http.response.code==404</code>.</li>
+            <li>To inspect browser input on a vulnerable test site use <code>http</code> filter while performing the action.</li>
+            <li>To test client-server sniffing, run the provided Python server/client on two machines and capture the traffic.</li>
+          </ol>
+
+          <pre id="p9-code"><code># Simple server (Python)
+import socket
+s = socket.socket()
+port = 8080
+s.bind(('0.0.0.0', port))
+s.listen(5)
+print('Server listening')
+while True:
+    c, addr = s.accept()
+    print('Got connection from', addr)
+    c.sendall('Thank you for connecting!'.encode())
+    c.close()
+
+# Simple client (Python)
+import socket
+s = socket.socket()
+s.connect(('192.168.2.60', 8080))
+print(s.recv(1024).decode())
+</code></pre>
+        </div>
+      </section>
+
+      <!-- Practical 10 -->
+      <section class="card" id="p10">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 10 — DoS using Colasoft</strong>
+            <div class="note">Use in a controlled lab environment only. Follow your institute guidelines.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p10-steps')">Toggle</button>
+            <button class="copy" data-target="p10-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
+
+        <div id="p10-steps" class="steps hidden">
+          <ol>
+            <li>Install Colasoft or an equivalent packet generator.</li>
+            <li>Configure target IP and start flooding with generated packets. Monitor bandwidth and target responsiveness.</li>
+          </ol>
+
+          <pre id="p10-code"><code># GUI-driven — no code. Use the Colasoft UI per the lab manual.</code></pre>
+        </div>
+      </section>
+
+      <!-- Practical 11 -->
+      <section class="card" id="p11">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 11 — ZAP (Zed Attack Proxy)</strong>
+            <div class="note">Install OWASP ZAP. Use spidering, passive scan, and active scan modes.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p11-steps')">Toggle</button>
+            <button class="copy" data-target="p11-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
+
+        <div id="p11-steps" class="steps hidden">
+          <ol>
+            <li>Open ZAP, set the browser proxy to ZAP, visit the target site (e.g., techpanda.com or testphp.vulnweb.com).</li>
+            <li>Run Passive Scan to collect info; run Active Scan for exploit checks (lab environment only).</li>
+            <li>Review findings and exported report.</li>
+          </ol>
+
+          <pre id="p11-code"><code># ZAP is GUI-driven. There's also a CLI and API for automation (see ZAP docs).</code></pre>
+        </div>
+      </section>
+
+      <!-- Practical 12 -->
+      <section class="card" id="p12">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 12 — File Hiding / Stealth Files (Windows)</strong>
+            <div class="note">Simple OS techniques to hide or disguise files.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p12-steps')">Toggle</button>
+            <button class="copy" data-target="p12-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
+
+        <div id="p12-steps" class="steps hidden">
+          <ol>
+            <li>Hide file with attrib: <code>attrib +h +s demo.txt</code>. To unhide: <code>attrib -h -s demo.txt</code>.</li>
+            <li>Rename to disguise type (change extension) or create double extensions to confuse users.</li>
+          </ol>
+
+          <pre id="p12-code"><code>attrib +h +s demo.txt
+attrib -h -s demo.txt
+# Example: rename to disguise
+ren secret.exe secret.txt
+</code></pre>
+        </div>
+      </section>
+
+      <!-- Practical 13 -->
+      <section class="card" id="p13">
+        <div class="sec-head">
+          <div>
+            <strong>Practical 13 — Session Impersonation &amp; Steganography</strong>
+            <div class="note">Cookie Editor &amp; Tamper plugins; OpenStego &amp; StegSolve for stego tasks.</div>
+          </div>
+          <div class="controls">
+            <button class="toggle" onclick="toggle('p13-steps')">Toggle</button>
+            <button class="copy" data-target="p13-code" onclick="copyCode(event)">Copy code</button>
+          </div>
+        </div>
+
+        <div id="p13-steps" class="steps hidden">
+          <ol>
+            <li>Chrome: Install Cookie Editor &gt; Login to target &gt; Export cookies (JSON) &gt; Logout &gt; Import JSON to impersonate session.</li>
+            <li>Firefox: Install Tamper Data (or Tamper FF Quantum), enable tampering, modify request parameters while submitting forms.</li>
+            <li>OpenStego: Choose cover file (PNG), choose secret data, set password &gt; Generate stego file. Use Extract mode to retrieve data.
+            </li>
+            <li>StegSolve: Run JAR (<code>java -jar StegSolve-1.4.jar</code>), open image, Analyze &gt; Data Extract &gt; LSB options.</li>
+          </ol>
+
+          <pre id="p13-code"><code># Example: run StegSolve (Java required)
+# Place StegSolve jar in a folder and run:
+java -jar StegSolve-1.4.jar
+
+# OpenStego is GUI-driven: select cover file and secret file, then generate stego.
+</code></pre>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      Tip: Use the copy buttons to quickly paste code into your editor. This page is editable — tell me any changes you want.
+    </footer>
+  </div>
+
+  <script>
+    function toggle(id){const el=document.getElementById(id);el.classList.toggle('hidden')}
+    function copyCode(e){const btn=e.currentTarget;const target=btn.getAttribute('data-target');const txt=document.getElementById(target).innerText;navigator.clipboard.writeText(txt).then(()=>{btn.innerText='Copied';setTimeout(()=>btn.innerText='Copy code',1200)}).catch(()=>{alert('Copy failed — select and Ctrl+C')})}
+    function expandAll(){document.querySelectorAll('.steps').forEach(s=>s.classList.remove('hidden'))}
+    function collapseAll(){document.querySelectorAll('.steps').forEach(s=>s.classList.add('hidden'))}
+    // assign data-targets for copy buttons where missing
+    document.querySelectorAll('.copy').forEach(btn=>{if(!btn.getAttribute('data-target')){const section=btn.closest('.card');const id=section.id;btn.setAttribute('data-target', id+'-code')}})
+  </script>
 </body>
 </html>
