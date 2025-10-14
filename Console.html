@@ -1,130 +1,415 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Practical 1 - C# Programs</title>
-<style>
-    body { font-family: Consolas, monospace; background: #f4f4f4; color: #333; padding: 20px; }
-    h1, h2 { color: #222; }
-    pre { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); overflow-x: auto; }
-    code { font-family: 'Courier New', monospace; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IPL Analysis — Single HTML file</title>
+  <style>
+    body{font-family:Inter, Roboto, Arial, sans-serif; background:#0f172a; color:#e6eef8; padding:24px}
+    .container{max-width:1100px;margin:0 auto}
+    h1{font-size:22px;margin-bottom:6px}
+    p.lead{color:#9fb0d6}
+    .card{background:#071020;border:1px solid #113; padding:14px;border-radius:10px;margin:18px 0}
+    .controls{margin-bottom:8px}
+    button{background:#1e40af;color:white;border:0;padding:8px 10px;border-radius:6px;margin-right:8px;cursor:pointer}
+    button.secondary{background:#334155}
+    textarea.code{width:100%;height:420px;background:#001219;color:#dbeafe;border-radius:8px;border:0;padding:12px;font-family:monospace;font-size:12px;white-space:pre;overflow:auto}
+    small.note{display:block;color:#9fb0d6;margin-top:6px}
+    .meta{font-size:12px;color:#9fb0d6}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .filename{background:#07102a;padding:6px 8px;border-radius:6px;border:1px solid #193}
+  </style>
 </head>
 <body>
-<h1>Practical 1 - C# Programs</h1>
+  <div class="container">
+    <h1>IPL Analysis — Single HTML file</h1>
+    <p class="lead">This HTML contains the <code>ipl_analysis.py</code> script and the pip install commands as copyable/downloadable code blocks. These are for copying into your editor (they won't run in the browser).</p>
 
-<h2>1️⃣ Simple Calculator</h2>
-<pre><code>using System;
-class Program
-{
-    static void Main()
-    {
-        Console.Write("Enter 1st: "); int a = int.Parse(Console.ReadLine());
-        Console.Write("Enter 2nd: "); int b = int.Parse(Console.ReadLine());
-        Console.Write("Choose (+,-,*,/): "); char op = char.Parse(Console.ReadLine());
-        int r = 0;
+    <div class="meta">Tip: click <strong>Download</strong> to save the file locally, or <strong>Copy</strong> to paste it into your IDE.</div>
 
-        switch (op)
-        {
-            case '+': r = a + b; break;
-            case '-': r = a - b; break;
-            case '*': r = a * b; break;
-            case '/':
-                if (b == 0)
-                {
-                    Console.WriteLine("Invalid division (cannot divide by zero).");
-                    return;
-                }
-                r = a / b;
-                break;
-            default:
-                Console.WriteLine("Invalid operator!");
-                return;
-        }
+    <script>
+      function copyCode(id){
+        const ta = document.getElementById(id);
+        ta.select();
+        document.execCommand('copy');
+        alert('Copied to clipboard');
+      }
+      function downloadCode(id, filename){
+        const code = document.getElementById(id).value;
+        const blob = new Blob([code], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+      }
+      function toggleWrap(id){
+        const ta = document.getElementById(id);
+        ta.style.whiteSpace = (ta.style.whiteSpace==='pre' ? 'pre-wrap' : 'pre');
+      }
+    </script>
 
-        Console.WriteLine($"Result = {r}");
-    }
-}</code></pre>
+    <!-- Requirements card -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>Requirements — pip commands</strong>
+          <div class="meta">Install the Python packages required to run <code>ipl_analysis.py</code></div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('req-code')">Copy</button>
+          <button onclick="downloadCode('req-code','requirements.sh')">Download</button>
+          <button class="secondary" onclick="toggleWrap('req-code')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="req-code" class="code">python -m pip install pandas
+python -m pip install numpy
+python -m pip install matplotlib
+python -m pip install seaborn
+python -m pip install scikit-learn
+python -m pip install scipy
+python -m pip install mlxtend
+</textarea>
+    </div>
 
-<h2>2️⃣ Calculator with Functions</h2>
-<pre><code>using System;
-class Program {
-    static int Add(int a,int b)=>a+b;
-    static int Sub(int a,int b)=>a-b;
-    static int Mul(int a,int b)=>a*b;
-    static int Div(int a,int b)=>b==0?0:a/b;
-    static void Main() {
-        Console.Write("Enter 1st: "); int a=int.Parse(Console.ReadLine());
-        Console.Write("Enter 2nd: "); int b=int.Parse(Console.ReadLine());
-        Console.Write("Choose (+,-,*,/): "); char op=char.Parse(Console.ReadLine());
-        if(op=='/' && b==0){Console.WriteLine("Invalid division"); return;}
-        int r = op switch {
-            '+' => Add(a,b),
-            '-' => Sub(a,b),
-            '*' => Mul(a,b),
-            '/' => Div(a,b),
-            _ => 0
-        };
-        Console.WriteLine($"Result = {r}");
-    }
-}</code></pre>
+    <!-- IPL Analysis card -->
+    <div class="card">
+      <div class="row controls">
+        <div style="flex:1">
+          <strong>ipl_analysis.py</strong>
+          <div class="meta">End-to-end IPL analysis script (data cleaning, preprocessing, classification, clustering, association)</div>
+        </div>
+        <div class="row">
+          <button onclick="copyCode('code-ipl')">Copy</button>
+          <button onclick="downloadCode('code-ipl','ipl_analysis.py')">Download</button>
+          <button class="secondary" onclick="toggleWrap('code-ipl')">Toggle Wrap</button>
+        </div>
+      </div>
+      <textarea id="code-ipl" class="code"># ipl_analysis.py
+# End-to-end demo: data cleaning, noisy-data handling, preprocessing (correlation/chi-square),
+# classification comparison & improvement, Random Forest details, clustering, association.
+#
+# Written to be simple and readable with comments.
 
-<h2>3️⃣ Odd or Even</h2>
-<pre><code>using System;
-class Program {
-    static void Main() {
-        Console.Write("Enter a number: ");
-        int n=int.Parse(Console.ReadLine());
-        Console.WriteLine(n%2==0 ? "Even" : "Odd");
-    }
-}</code></pre>
+import warnings
+warnings.filterwarnings("ignore")
 
-<h2>4️⃣ Prime Number</h2>
-<pre><code>using System;
-class Program {
-    static void Main() {
-        Console.Write("Enter number: ");
-        int n=int.Parse(Console.ReadLine());
-        bool prime = n>1;
-        for(int i=2;i<=Math.Sqrt(n);i++)
-            if(n%i==0){ prime=false; break; }
-        Console.WriteLine(prime ? "Prime" : "Not Prime");
-    }
-}</code></pre>
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
-<h2>5️⃣ Temperature Conversion</h2>
-<pre><code>using System;
-class Program {
-    static void Main() {
-        Console.Write("Enter Celsius: ");
-        double c=double.Parse(Console.ReadLine());
-        Console.WriteLine($"Fahrenheit = {(c*9/5)+32}");
-    }
-}</code></pre>
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, classification_report
+from sklearn.impute import SimpleImputer
 
-<h2>6️⃣ Factorial (With Recursion)</h2>
-<pre><code>using System;
-class Program {
-    static long Fact(int n)=> (n<=1)?1:n*Fact(n-1);
-    static void Main() {
-        Console.Write("Enter number: ");
-        int n=int.Parse(Console.ReadLine());
-        Console.WriteLine(n<0?"Invalid":"Factorial = "+Fact(n));
-    }
-}</code></pre>
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
 
-<h2>7️⃣ Factorial (Without Recursion)</h2>
-<pre><code>using System;
-class Program {
-    static void Main() {
-        Console.Write("Enter number: ");
-        int n=int.Parse(Console.ReadLine());
-        if(n<0){Console.WriteLine("Invalid");return;}
-        long f=1; for(int i=2;i<=n;i++) f*=i;
-        Console.WriteLine($"Factorial = {f}");
-    }
-}</code></pre>
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from scipy.stats import chi2_contingency
+from scipy.stats import mstats
 
+# Try mlxtend for apriori if available; fallback otherwise
+try:
+    from mlxtend.frequent_patterns import apriori, association_rules
+    from mlxtend.preprocessing import TransactionEncoder
+    MLXTEND_AVAILABLE = True
+except Exception:
+    MLXTEND_AVAILABLE = False
+
+# Replace with path to your file if needed
+path = "/mnt/data/IPL.csv"
+df = pd.read_csv(path)
+
+print("=== Loaded dataset ===")
+print(df.shape)
+print(df.columns.tolist())
+
+# ---------------------------------------------------------------------
+# 1. DATA CLEANING
+# ---------------------------------------------------------------------
+
+print("\n--- 1. Missing values checks ---")
+print("Any NA per column (.isna().any()):")
+print(df.isna().any())
+print("\nAll NA per column (.isna().all()):")
+print(df.isna().all())
+print("\nCounts of missing values per column:")
+print(df.isna().sum())
+
+# Demonstrate dropna variations
+print("\n--- dropna demos ---")
+print("Original shape:", df.shape)
+print("Drop rows with ANY NA:", df.dropna(how="any").shape)
+print("Drop rows with ALL NA:", df.dropna(how="all").shape)
+
+# Demonstrate fillna variations (works on copy so original kept)
+print("\n--- fillna demos ---")
+df_fill_zero = df.fillna(0)
+df_fill_ffill = df.fillna(method="ffill")
+df_fill_bfill = df.fillna(method="bfill")
+
+numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+print("Numeric columns:", numeric_cols)
+
+# Fill numeric cols with mean and max
+df_fill_mean = df.copy()
+for c in numeric_cols:
+    df_fill_mean[c] = df_fill_mean[c].fillna(df_fill_mean[c].mean())
+df_fill_max = df.copy()
+for c in numeric_cols:
+    df_fill_max[c] = df_fill_max[c].fillna(df_fill_max[c].max())
+
+# Scaling examples
+print("\n--- scaling demos (MinMax and Z-score) ---")
+scaler_mm = MinMaxScaler()
+scaler_std = StandardScaler()
+if numeric_cols:
+    sample = df[numeric_cols].dropna().head(200)
+    if not sample.empty:
+        mm = scaler_mm.fit_transform(sample)
+        z = scaler_std.fit_transform(sample)
+        print("MinMax (first 3 rows):\n", pd.DataFrame(mm, columns=sample.columns).head(3))
+        print("Z-score (first 3 rows):\n", pd.DataFrame(z, columns=sample.columns).head(3))
+    else:
+        print("Not enough numeric data for scaling demo.")
+else:
+    print("No numeric columns for scaling demo.")
+
+# ---------------------------------------------------------------------
+# 2. NOISY DATA: Outliers & invalid formats & handling
+# ---------------------------------------------------------------------
+print("\n--- 2. Noisy data: outliers & invalid formats ---")
+if numeric_cols:
+    for col in numeric_cols:
+        col_data = pd.to_numeric(df[col], errors="coerce")
+        if col_data.dropna().size > 0:
+            plt.figure(figsize=(6,2.4))
+            plt.boxplot(col_data.dropna().values, vert=False)
+            plt.title(f"Boxplot: {col}")
+            plt.xlabel(col)
+            plt.show()
+
+# Detect columns that appear to have invalid numeric formatting
+print("\nColumns with coercion-caused NaNs when converting to numeric (format issues):")
+for c in df.columns:
+    coerced = pd.to_numeric(df[c], errors="coerce")
+    non_numeric_count = coerced.isna().sum()
+    # show columns that have both numeric and non-numeric after coercion
+    if non_numeric_count > 0 and coerced.notna().sum() > 0:
+        print(f" - {c}: {non_numeric_count} non-numeric entries detected when coercing")
+
+# Handling outliers: winsorize numeric columns (clip extremes)
+df_winsor = df.copy()
+for c in numeric_cols:
+    try:
+        arr = pd.to_numeric(df_winsor[c], errors="coerce").fillna(df_winsor[c].median()).values
+        arr_w = mstats.winsorize(arr, limits=[0.01, 0.01])  # clip 1% tails
+        df_winsor[c] = arr_w
+    except Exception:
+        pass
+print("Applied winsorization to numeric columns (1% tails).")
+
+# ---------------------------------------------------------------------
+# 3. DATA PREPROCESSING - Data Integration: Correlation & Chi-square
+# ---------------------------------------------------------------------
+print("\n--- 3. Correlation & heatmap ---")
+if len(numeric_cols) > 1:
+    corr = df[numeric_cols].corr()
+    print(corr.round(3))
+    plt.figure(figsize=(6,5))
+    plt.matshow(corr, fignum=1)
+    plt.colorbar()
+    plt.xticks(range(len(numeric_cols)), numeric_cols, rotation=90)
+    plt.yticks(range(len(numeric_cols)), numeric_cols)
+    plt.title("Correlation matrix (heatmap)")
+    plt.show()
+else:
+    print("Not enough numeric columns for correlation.")
+
+# Chi-square test between first two categorical columns if available
+cat_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
+if len(cat_cols) >= 2:
+    c1, c2 = cat_cols[:2]
+    print(f"\nChi-square test between '{c1}' and '{c2}'")
+    cont = pd.crosstab(df[c1], df[c2])
+    chi2, p, dof, ex = chi2_contingency(cont.fillna(0))
+    print("chi2 = {:.3f}, p-value = {:.5f}, dof = {}".format(chi2, p, dof))
+else:
+    print("Not enough categorical columns for chi-square demo.")
+
+# ---------------------------------------------------------------------
+# 4. CLASSIFICATION: Compare several algorithms
+# ---------------------------------------------------------------------
+print("\n--- 4. Classification: create a simple binary target and compare models ---")
+
+# Create a binary target. Prefer 'Wkts' if it exists; else pick first numeric col
+if "Wkts" in df.columns:
+    df_clf = df.copy()
+    df_clf["Wkts_num"] = pd.to_numeric(df_clf["Wkts"], errors="coerce")
+    med = df_clf["Wkts_num"].median()
+    df_clf["HighWkts"] = (df_clf["Wkts_num"] >= med).astype(int)
+    target = "HighWkts"
+    print(f"Using 'Wkts' to create target (median = {med}).")
+else:
+    if numeric_cols:
+        c = numeric_cols[0]
+        df_clf = df.copy()
+        df_clf[c + "_num"] = pd.to_numeric(df_clf[c], errors="coerce")
+        med = df_clf[c + "_num"].median()
+        df_clf["Target"] = (df_clf[c + "_num"] >= med).astype(int)
+        target = "Target"
+        print(f"Fallback: created target from column {c}.")
+    else:
+        raise RuntimeError("No numeric column available to create a classification target.")
+
+# Choose numeric features only
+features = [c for c in df_clf.select_dtypes(include=[np.number]).columns if c != target]
+X = df_clf[features]
+y = df_clf[target]
+
+# Impute numeric missing values
+imp = SimpleImputer(strategy="mean")
+X_imp = pd.DataFrame(imp.fit_transform(X), columns=features)
+
+# Train-test split (stratify if possible)
+X_train, X_test, y_train, y_test = train_test_split(X_imp, y, test_size=0.2, random_state=42, stratify=y)
+
+# Scale for algorithms that need it
+scaler = StandardScaler()
+X_train_s = scaler.fit_transform(X_train)
+X_test_s = scaler.transform(X_test)
+
+models = {
+    "LogisticRegression": LogisticRegression(max_iter=500),
+    "KNN": KNeighborsClassifier(),
+    "DecisionTree": DecisionTreeClassifier(random_state=42),
+    "RandomForest": RandomForestClassifier(random_state=42),
+    "SVM": SVC(probability=True, random_state=42),
+    "GaussianNB": GaussianNB()
+}
+
+results = []
+for name, m in models.items():
+    m.fit(X_train_s, y_train)
+    y_pred = m.predict(X_test_s)
+    if hasattr(m, "predict_proba"):
+        y_proba = m.predict_proba(X_test_s)[:, 1]
+        roc = roc_auc_score(y_test, y_proba)
+    else:
+        roc = np.nan
+    results.append({
+        "Model": name,
+        "Accuracy": accuracy_score(y_test, y_pred),
+        "Precision": precision_score(y_test, y_pred, zero_division=0),
+        "Recall": recall_score(y_test, y_pred, zero_division=0),
+        "F1": f1_score(y_test, y_pred, zero_division=0),
+        "ROC_AUC": roc
+    })
+
+print(pd.DataFrame(results).round(4))
+
+# ---------------------------------------------------------------------
+# 5. Improving accuracy: simple grid search examples (kept small for speed)
+# ---------------------------------------------------------------------
+print("\n--- 5. Improving accuracy: GridSearch for RandomForest and KNN (small grids) ---")
+rf_grid = {"n_estimators": [50, 100], "max_depth": [None, 5]}
+gs_rf = GridSearchCV(RandomForestClassifier(random_state=42), rf_grid, cv=3, scoring="accuracy", n_jobs=1)
+gs_rf.fit(X_train_s, y_train)
+print("RF best params:", gs_rf.best_params_)
+
+knn_grid = {"n_neighbors": [3, 5]}
+gs_knn = GridSearchCV(KNeighborsClassifier(), knn_grid, cv=3, scoring="accuracy", n_jobs=1)
+gs_knn.fit(X_train_s, y_train)
+print("KNN best params:", gs_knn.best_params_)
+
+# Show classification report for best rf
+best_rf = gs_rf.best_estimator_
+y_pred_rf = best_rf.predict(X_test_s)
+print("\nRandomForest tuned classification report:")
+print(classification_report(y_test, y_pred_rf, zero_division=0))
+
+# ---------------------------------------------------------------------
+# 6. Random Forest detailed: feature importances
+# ---------------------------------------------------------------------
+print("\n--- 6. RandomForest feature importance ---")
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)  # RF works fine on unscaled numeric features
+y_pred = rf.predict(X_test)
+print("RF accuracy (unscaled features):", accuracy_score(y_test, y_pred))
+importances = pd.Series(rf.feature_importances_, index=features).sort_values(ascending=False)
+print(importances.head(10))
+
+plt.figure(figsize=(6,3))
+topn = min(8, len(importances))
+plt.barh(importances.index[:topn][::-1], importances.values[:topn][::-1])
+plt.title("Top feature importances (RF)")
+plt.xlabel("Importance")
+plt.show()
+
+# ---------------------------------------------------------------------
+# 7. Clustering (KMeans) + silhouette
+# ---------------------------------------------------------------------
+print("\n--- 7. Clustering: KMeans and silhouette ---")
+if len(numeric_cols) >= 2:
+    X_cluster = df[numeric_cols].fillna(df[numeric_cols].mean())
+    X_cluster_s = StandardScaler().fit_transform(X_cluster)
+    sil_scores = {}
+    for k in range(2, 6):
+        km = KMeans(n_clusters=k, n_init=5, random_state=42)
+        labels = km.fit_predict(X_cluster_s)
+        sil = silhouette_score(X_cluster_s, labels)
+        sil_scores[k] = sil
+        print(f"k={k}, silhouette={sil:.4f}")
+    best_k = max(sil_scores, key=sil_scores.get)
+    print("Best k:", best_k)
+else:
+    print("Not enough numeric columns to run clustering.")
+
+# ---------------------------------------------------------------------
+# 8. Association rules or simple co-occurrence
+# ---------------------------------------------------------------------
+print("\n--- 8. Association / co-occurrence ---")
+possible = [c for c in ["Venue_Name", "Venue", "Against", "OpponentTeam name", "Player"] if c in df.columns]
+if MLXTEND_AVAILABLE and possible:
+    print("Building transactions from:", possible)
+    transactions = []
+    for _, r in df[possible].iterrows():
+        items = []
+        for c in possible:
+            v = r[c]
+            if pd.notna(v):
+                items.append(f"{c}={v}")
+        transactions.append(items)
+    te = TransactionEncoder()
+    te_ary = te.fit(transactions).transform(transactions)
+    df_te = pd.DataFrame(te_ary, columns=te.columns_).astype(int)
+    freq = apriori(df_te, min_support=0.05, use_colnames=True)
+    print("Frequent itemsets (support>=0.05):")
+    print(freq.sort_values("support", ascending=False).head())
+    rules = association_rules(freq, metric="lift", min_threshold=1.0)
+    print("Top rules by lift:")
+    print(rules.sort_values("lift", ascending=False).head())
+elif possible:
+    print("mlxtend not available — showing co-occurrence counts for the first two categorical columns found.")
+    if len(possible) >= 2:
+        co = pd.crosstab(df[possible[0]], df[possible[1]])
+        print(co.iloc[:20, :20])
+    else:
+        print("Need at least two categorical columns for co-occurrence analysis.")
+else:
+    print("No categorical columns suitable for association demo.")
+
+print("\n--- End of script ---")
+</textarea>
+    </div>
+
+    <p class="meta">The file above contains your IPL analysis script. Use the Copy or Download buttons to get the code. If you want this packaged as a ZIP with individual files or want any adjustments (shorter comments, added README, different filename), tell me and I'll update it.</p>
+  </div>
 </body>
 </html>
